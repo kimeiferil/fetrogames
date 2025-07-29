@@ -1,0 +1,3763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FetroGames - Multiplayer Web Game Platform</title>
+    <meta name="description" content="Real-time multiplayer gaming platform with Tic-Tac-Toe, Rock-Paper-Scissors and Trivia games">
+    <meta name="author" content="Feril Kimei">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        .game-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .game-card {
+            transition: all 0.3s ease;
+        }
+        .auth-form {
+            backdrop-filter: blur(10px);
+        }
+        .trivia-option:hover {
+            transform: scale(1.02);
+        }
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-gray-800/50 backdrop-blur-md shadow-lg fixed w-full z-10 border-b border-gray-700/50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="#" class="flex-shrink-0 flex items-center">
+                        <i class="fas fa-gamepad text-purple-500 text-2xl mr-2"></i>
+                        <span class="font-bold text-xl bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">FetroGames</span>
+                    </a>
+                </div>
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="/" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">Home</a>
+                    <a href="/dashboard" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">Dashboard</a>
+                    <a href="/games" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">Games</a>
+                    <button id="loginBtn" class="px-4 py-2 rounded-md text-sm font-medium bg-purple-600 hover:bg-purple-700">Login</button>
+                    <button id="registerBtn" class="px-4 py-2 rounded-md text-sm font-medium bg-pink-600 hover:bg-pink-700 ml-2">Register</button>
+                </div>
+                <div class="md:hidden flex items-center">
+                    <button id="mobileMenuBtn" class="text-gray-300 hover:text-white focus:outline-none">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile menu -->
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-800 pb-3 px-2">
+            <a href="#home" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700">Home</a>
+            <a href="#games" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700">Games</a>
+            <a href="#features" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700">Features</a>
+            <button id="mobileLoginBtn" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium bg-purple-600 hover:bg-purple-700 mt-2">Login</button>
+            <button id="mobileRegisterBtn" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium bg-pink-600 hover:bg-pink-700 mt-2">Register</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="pt-24 pb-16 md:pt-32 md:pb-24 px-4 bg-gradient-to-b from-gray-800 to-gray-900">
+        <div class="max-w-7xl mx-auto">
+            <div class="md:flex items-center">
+                <div class="md:w-1/2 mb-10 md:mb-0">
+                    <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight animate-fade-in">
+                        <span class="bg-gradient-to-r from-purple-300 to-pink-400 bg-clip-text text-transparent">Play</span> and <span class="bg-gradient-to-r from-pink-300 to-purple-400 bg-clip-text text-transparent">Compete</span> with Friends
+                    </h1>
+                    <p class="text-lg md:text-xl text-gray-300 mb-8">
+                        Join FetroGames and challenge your friends in exciting multiplayer games. Win rewards, climb leaderboards, and have fun!
+                    </p>
+                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                        <button id="heroRegisterBtn" class="px-8 py-3 rounded-lg font-bold bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 transition duration-300 transform hover:scale-105">
+                            Get Started - It's Free
+                        </button>
+                        <button id="heroGamesBtn" class="px-8 py-3 rounded-lg font-bold bg-gray-700 hover:bg-gray-600 transition duration-300">
+                            Explore Games
+                        </button>
+                    </div>
+                </div>
+                <div class="md:w-1/2 flex justify-center">
+                    <div class="relative w-full max-w-md">
+                        <div class="absolute -top-10 -left-10 w-32 h-32 bg-purple-500 rounded-full opacity-20 filter blur-3xl"></div>
+                        <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-pink-500 rounded-full opacity-20 filter blur-3xl"></div>
+                        <div class="relative floating animate-float">
+                            <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                                 alt="Gaming Illustration" 
+                                 class="rounded-2xl shadow-2xl border-4 border-gray-700">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-16 px-4 bg-gray-900/40 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Why Choose FetroGames?</h2>
+                <p class="text-lg text-gray-400 max-w-3xl mx-auto">
+                    We provide the best multiplayer gaming experience with cutting-edge features
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-gray-800/50 p-8 rounded-xl hover:bg-gray-700/50 transition duration-300 border border-gray-700/30 hover:border-purple-500/30 hover:shadow-lg hover:shadow-purple-500/10">
+                    <div class="w-16 h-16 bg-purple-500 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-bolt text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Real-time Multiplayer</h3>
+                    <p class="text-gray-400">
+                        Play with friends or random opponents in real-time with our low-latency technology.
+                    </p>
+                </div>
+                
+                <div class="bg-gray-800 p-8 rounded-xl hover:bg-gray-700 transition duration-300">
+                    <div class="w-16 h-16 bg-pink-500 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-trophy text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Rewards System</h3>
+                    <p class="text-gray-400">
+                        Earn points and rewards for your victories. Compete in tournaments for bigger prizes.
+                    </p>
+                </div>
+                
+                <div class="bg-gray-800 p-8 rounded-xl hover:bg-gray-700 transition duration-300">
+                    <div class="w-16 h-16 bg-indigo-500 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-shield-alt text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Secure Platform</h3>
+                    <p class="text-gray-400">
+                        Your data is protected with industry-standard security measures and encryption.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Games Section -->
+    <section id="games" class="py-16 px-4 bg-gray-800/50 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Our Games</h2>
+                <p class="text-lg text-gray-400 max-w-3xl mx-auto">
+                    Challenge your friends in these exciting multiplayer games
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Tic Tac Toe Card -->
+                <div class="game-card bg-gray-900/50 rounded-xl overflow-hidden shadow-lg border border-gray-700/30 hover:border-purple-500/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/10">
+                    <div class="h-48 bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
+                        <i class="fas fa-times-circle text-white text-7xl opacity-80"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-3">Tic Tac Toe</h3>
+                        <p class="text-gray-400 mb-4">The classic game with a competitive twist. Play against friends or AI.</p>
+                        <button class="play-tic-tac-toe w-full py-2 bg-purple-600 hover:bg-purple-700 rounded-lg font-medium">
+                            Play Now
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Rock Paper Scissors Card -->
+                <div class="game-card bg-gray-900 rounded-xl overflow-hidden shadow-lg">
+                    <div class="h-48 bg-gradient-to-r from-pink-500 to-yellow-500 flex items-center justify-center">
+                        <i class="fas fa-hand-rock text-white text-7xl opacity-80"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-3">Rock Paper Scissors</h3>
+                        <p class="text-gray-400 mb-4">Test your luck and strategy in this enhanced version with special moves.</p>
+                        <button class="play-rock-paper-scissors w-full py-2 bg-pink-600 hover:bg-pink-700 rounded-lg font-medium">
+                            Play Now
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Trivia Card -->
+                <div class="game-card bg-gray-900 rounded-xl overflow-hidden shadow-lg">
+                    <div class="h-48 bg-gradient-to-r from-indigo-500 to-blue-500 flex items-center justify-center">
+                        <i class="fas fa-brain text-white text-7xl opacity-80"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-3">Trivia Challenge</h3>
+                        <p class="text-gray-400 mb-4">Test your knowledge across various categories in real-time battles.</p>
+                        <button class="play-trivia w-full py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg font-medium">
+                            Play Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-16 px-4 bg-gray-900">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div class="p-6">
+                    <div class="text-4xl font-bold text-purple-500 mb-2">10K+</div>
+                    <div class="text-gray-400">Active Players</div>
+                </div>
+                <div class="p-6">
+                    <div class="text-4xl font-bold text-pink-500 mb-2">500+</div>
+                    <div class="text-gray-400">Daily Matches</div>
+                </div>
+                <div class="p-6">
+                    <div class="text-4xl font-bold text-indigo-500 mb-2">50+</div>
+                    <div class="text-gray-400">Tournaments</div>
+                </div>
+                <div class="p-6">
+                    <div class="text-4xl font-bold text-blue-500 mb-2">24/7</div>
+                    <div class="text-gray-400">Support</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="py-16 px-4 bg-gray-800">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">What Players Say</h2>
+                <p class="text-lg text-gray-400 max-w-3xl mx-auto">
+                    Hear from our amazing community of gamers
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-gray-900 p-8 rounded-xl">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-purple-500 flex items-center justify-center text-white font-bold mr-4">JD</div>
+                        <div>
+                            <h4 class="font-bold">John Doe</h4>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-400">
+                        "The best multiplayer platform I've used. The trivia game is incredibly fun and competitive!"
+                    </p>
+                </div>
+                
+                <div class="bg-gray-900 p-8 rounded-xl">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-pink-500 flex items-center justify-center text-white font-bold mr-4">AS</div>
+                        <div>
+                            <h4 class="font-bold">Alice Smith</h4>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-400">
+                        "I love playing Rock Paper Scissors with my friends. The interface is smooth and intuitive."
+                    </p>
+                </div>
+                
+                <div class="bg-gray-900 p-8 rounded-xl">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold mr-4">MJ</div>
+                        <div>
+                            <h4 class="font-bold">Mike Johnson</h4>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-400">
+                        "The rewards system keeps me coming back. I've won several tournaments already!"
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 px-4 bg-gradient-to-r from-purple-900 to-pink-900">
+        <div class="max-w-7xl mx-auto text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready to Start Playing?</h2>
+            <p class="text-lg text-purple-200 max-w-3xl mx-auto mb-8">
+                Join thousands of players in exciting multiplayer battles. It's free to sign up!
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                <button id="bottomRegisterBtn" class="px-8 py-3 rounded-lg font-bold bg-white text-purple-900 hover:bg-gray-100 transition duration-300 transform hover:scale-105">
+                    Create Free Account
+                </button>
+                <button id="bottomGamesBtn" class="px-8 py-3 rounded-lg font-bold bg-transparent border-2 border-white hover:bg-white hover:bg-opacity-10 transition duration-300">
+                    Explore Games
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- M-Pesa Payment Section -->
+    <section id="mpesa" class="py-16 px-4 bg-gray-800">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Add Funds via M-Pesa</h2>
+                <p class="text-lg text-gray-400 max-w-3xl mx-auto">
+                    Deposit money to your account instantly using M-Pesa
+                </p>
+            </div>
+            
+            <div class="max-w-md mx-auto bg-gray-900 p-8 rounded-xl">
+                <div class="mb-6">
+                    <label for="phoneNumber" class="block text-gray-400 mb-2">M-Pesa Phone Number</label>
+                    <input type="tel" id="phoneNumber" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="07XXXXXXXX" required>
+                </div>
+                
+                <div class="mb-6">
+                    <label for="amount" class="block text-gray-400 mb-2">Amount (KES)</label>
+                    <input type="number" id="amount" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="100" min="10" max="70000" required>
+                </div>
+                
+                <button id="mpesaPay" class="w-full py-3 bg-green-600 hover:bg-green-700 rounded-lg font-medium flex items-center justify-center">
+                    <i class="fas fa-mobile-alt mr-2"></i> Pay via M-Pesa
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Leaderboard Section -->
+    <section id="leaderboard" class="py-16 px-4 bg-gray-900">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Top Players</h2>
+                <p class="text-lg text-gray-400 max-w-3xl mx-auto">
+                    Our current leaderboard champions
+                </p>
+            </div>
+            
+            <div class="bg-gray-800 rounded-xl overflow-hidden">
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-gray-700 text-left">
+                            <th class="py-4 px-6">Rank</th>
+                            <th class="py-4 px-6">Player</th>
+                            <th class="py-4 px-6">Score</th>
+                            <th class="py-4 px-6">Games Won</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardBody">
+                        <!-- Leaderboard data will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 py-12 px-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <a href="#" class="flex items-center mb-6">
+                        <i class="fas fa-gamepad text-purple-500 text-2xl mr-2"></i>
+                        <span class="font-bold text-xl bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">FetroGames</span>
+                    </a>
+                    <p class="text-gray-400">
+                        The ultimate multiplayer gaming platform. Play, compete, and win rewards with friends.
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Games</h4>
+                    <ul class="space-y-2">
+                        <li><a href="/games/tic-tac-toe" class="text-gray-400 hover:text-purple-400">Tic Tac Toe</a></li>
+                        <li><a href="/games/rock-paper-scissors" class="text-gray-400 hover:text-pink-400">Rock Paper Scissors</a></li>
+                        <li><a href="/games/trivia" class="text-gray-400 hover:text-indigo-400">Trivia Challenge</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Company</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-purple-400">About Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-pink-400">Careers</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-indigo-400">Blog</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-blue-400">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Connect With Us</h4>
+                    <div class="flex space-x-4 mb-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-purple-500 transition">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-pink-500 transition">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-blue-500 transition">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-red-500 transition">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                    <p class="text-gray-400">
+                        Subscribe to our newsletter for updates
+                    </p>
+                    <div class="mt-2 flex">
+                        <input type="email" placeholder="Your email" class="px-4 py-2 bg-gray-800 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-purple-500 w-full">
+                        <button class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-r-lg">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-500 mb-4 md:mb-0">
+                    © 2023 FetroGames. All rights reserved.
+                </p>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-500 hover:text-gray-400">Privacy Policy</a>
+                    <a href="#" class="text-gray-500 hover:text-gray-400">Terms of Service</a>
+                    <a href="#" class="text-gray-500 hover:text-gray-400">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-gray-800 rounded-xl max-w-md w-full mx-4 auth-form border border-gray-700">
+            <div class="p-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold">Login to FetroGames</h3>
+                    <button id="closeLoginModal" class="text-gray-400 hover:text-white">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <form id="loginForm">
+                    <div class="mb-4">
+                        <label for="loginEmail" class="block text-gray-400 mb-2">Email</label>
+                        <input type="email" id="loginEmail" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="your@email.com" required>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label for="loginPassword" class="block text-gray-400 mb-2">Password</label>
+                        <input type="password" id="loginPassword" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="••••••••" required>
+                    </div>
+                    
+                    <button type="submit" class="w-full py-2 bg-purple-600 hover:bg-purple-700 rounded-lg font-medium mb-4">
+                        Login
+                    </button>
+                    
+                    <div class="text-center text-gray-400">
+                        Don't have an account? <button id="switchToRegister" class="text-purple-400 hover:text-purple-300">Register</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-gray-800 rounded-xl max-w-md w-full mx-4 auth-form border border-gray-700">
+            <div class="p-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold">Create an Account</h3>
+                    <button id="closeRegisterModal" class="text-gray-400 hover:text-white">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <form id="registerForm">
+                    <div class="mb-4">
+                        <label for="registerUsername" class="block text-gray-400 mb-2">Username</label>
+                        <input type="text" id="registerUsername" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="gamemaster" required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="registerEmail" class="block text-gray-400 mb-2">Email</label>
+                        <input type="email" id="registerEmail" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="your@email.com" required>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label for="registerPassword" class="block text-gray-400 mb-2">Password</label>
+                        <input type="password" id="registerPassword" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="••••••••" required>
+                    </div>
+                    
+                    <button type="submit" class="w-full py-2 bg-pink-600 hover:bg-pink-700 rounded-lg font-medium mb-4">
+                        Create Account
+                    </button>
+                    
+                    <div class="text-center text-gray-400">
+                        Already have an account? <button id="switchToLogin" class="text-pink-400 hover:text-pink-300">Login</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tic Tac Toe Game Modal -->
+    <div id="ticTacToeModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-gray-800 rounded-xl max-w-md w-full mx-4 border border-gray-700">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold">Tic Tac Toe</h3>
+                    <button id="closeTicTacToeModal" class="text-gray-400 hover:text-white">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="text-center mb-6">
+                    <div id="ticTacToeStatus" class="text-lg font-medium text-purple-400">Player X's turn</div>
+                </div>
+                
+                <div class="grid grid-cols-3 gap-2 mb-6">
+                    <div class="tic-tac-toe-cell w-full h-24 bg-gray-700 rounded-lg flex items-center justify-center text-4xl font-bold cursor-pointer hover:bg-gray-600" data-cell="0"></div>
+                    <div class="tic-tac-toe-cell w-full h-24 bg-gray-700 rounded-lg flex items-center justify-center text-4xl font-bold cursor-pointer hover:bg-gray-600" data-cell="1"></div>
+                    <div class="tic-tac-toe-cell w-full h-24 bg-gray-700 rounded-lg flex items-center justify-center text-4xl font-bold cursor-pointer hover:bg-gray-600" data-cell="2"></div>
+                    <div class="tic-tac-toe-cell w-full h-24 bg-gray-700 rounded-lg flex items-center justify-center text-4xl font-bold cursor-pointer hover:bg-gray-600" data-cell="3"></div>
+                    <div class="tic-tac-toe-cell w-full h-24 bg-gray-700 rounded-lg flex items-center justify-center text-4xl font-bold cursor-pointer hover:bg-gray-600" data-cell="4"></div>
+                    <div class="tic-tac-toe-cell w-full h-24 bg-gray-700 rounded-lg flex items-center justify-center text-4xl font-bold cursor-pointer hover:bg-gray-600" data-cell="5"></div>
+                    <div class="tic-tac-toe-cell w-full h-24 bg-gray-700 rounded-lg flex items-center justify-center text-4xl font-bold cursor-pointer hover:bg-gray-600" data-cell="6"></div>
+                    <div class="tic-tac-toe-cell w-full h-24 bg-gray-700 rounded-lg flex items-center justify-center text-4xl font-bold cursor-pointer hover:bg-gray-600" data-cell="7"></div>
+                    <div class="tic-tac-toe-cell w-full h-24 bg-gray-700 rounded-lg flex items-center justify-center text-4xl font-bold cursor-pointer hover:bg-gray-600" data-cell="8"></div>
+                </div>
+                
+                <div class="flex justify-between">
+                    <button id="ticTacToeReset" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg">
+                        Reset Game
+                    </button>
+                    <button id="ticTacToeClose" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg">
+                        Exit Game
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rock Paper Scissors Game Modal -->
+    <div id="rockPaperScissorsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-gray-800 rounded-xl max-w-md w-full mx-4 border border-gray-700">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold">Rock Paper Scissors</h3>
+                    <button id="closeRockPaperScissorsModal" class="text-gray-400 hover:text-white">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="text-center mb-8">
+                    <div id="rpsStatus" class="text-lg font-medium text-pink-400 mb-4">Choose your move!</div>
+                    
+                    <div class="flex justify-center space-x-4 mb-8">
+                        <div class="text-center">
+                            <div class="text-lg font-medium mb-2">You</div>
+                            <div id="playerChoice" class="text-6xl">?</div>
+                        </div>
+                        <div class="text-center flex items-center">
+                            <div class="text-2xl mx-4">vs</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-lg font-medium mb-2">Opponent</div>
+                            <div id="computerChoice" class="text-6xl">?</div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-center space-x-4 mb-6">
+                        <button class="rps-choice px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg text-4xl" data-choice="✊">
+                            ✊
+                        </button>
+                        <button class="rps-choice px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg text-4xl" data-choice="✋">
+                            ✋
+                        </button>
+                        <button class="rps-choice px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg text-4xl" data-choice="✌️">
+                            ✌️
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between">
+                    <button id="rpsReset" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg">
+                        Play Again
+                    </button>
+                    <button id="rpsClose" class="px-4 py-2 bg-pink-600 hover:bg-pink-700 rounded-lg">
+                        Exit Game
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trivia Game Modal -->
+    <div id="triviaModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-gray-800 rounded-xl max-w-md w-full mx-4 border border-gray-700">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold">Trivia Challenge</h3>
+                    <button id="closeTriviaModal" class="text-gray-400 hover:text-white">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div id="triviaGameArea">
+                    <div class="text-center mb-6">
+                        <div id="triviaStatus" class="text-lg font-medium text-indigo-400 mb-2">Question 1 of 5</div>
+                        <div id="triviaScore" class="text-lg">Score: 0</div>
+                    </div>
+                    
+                    <div id="triviaQuestion" class="text-xl font-medium mb-6">
+                        Loading question...
+                    </div>
+                    
+                    <div id="triviaOptions" class="space-y-3 mb-6">
+                        <button class="trivia-option w-full px-4 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg text-left transition">
+                            <span class="font-medium mr-2">A.</span> <span class="option-text">Option A</span>
+                        </button>
+                        <button class="trivia-option w-full px-4 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg text-left transition">
+                            <span class="font-medium mr-2">B.</span> <span class="option-text">Option B</span>
+                        </button>
+                        <button class="trivia-option w-full px-4 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg text-left transition">
+                            <span class="font-medium mr-2">C.</span> <span class="option-text">Option C</span>
+                        </button>
+                        <button class="trivia-option w-full px-4 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg text-left transition">
+                            <span class="font-medium mr-2">D.</span> <span class="option-text">Option D</span>
+                        </button>
+                    </div>
+                    
+                    <div id="triviaFeedback" class="hidden mb-4 p-3 rounded-lg"></div>
+                    
+                    <button id="triviaNext" class="w-full py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg font-medium hidden">
+                        Next Question
+                    </button>
+                </div>
+                
+                <div id="triviaResults" class="hidden text-center">
+                    <div class="text-2xl font-bold mb-4">Quiz Completed!</div>
+                    <div id="finalScore" class="text-4xl font-bold text-indigo-500 mb-6">5/5</div>
+                    <div class="mb-6">
+                        <div class="text-lg mb-2">Your performance:</div>
+                        <div class="w-full bg-gray-700 rounded-full h-4">
+                            <div id="scoreBar" class="bg-indigo-500 h-4 rounded-full" style="width: 100%"></div>
+                        </div>
+                    </div>
+                    <button id="triviaRestart" class="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg font-medium mr-2">
+                        Play Again
+                    </button>
+                    <button id="triviaExit" class="px-6 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg font-medium">
+                        Exit
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Notification -->
+    <div id="successNotification" class="fixed bottom-4 right-4 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg hidden z-50">
+        <div class="flex items-center">
+            <i class="fas fa-check-circle mr-2"></i>
+            <span id="successMessage">Operation successful!</span>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Firebase configuration would be initialized here
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
+        
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+    </script>
+        // DOM Elements
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const loginBtn = document.getElementById('loginBtn');
+        const registerBtn = document.getElementById('registerBtn');
+        const mobileLoginBtn = document.getElementById('mobileLoginBtn');
+        const mobileRegisterBtn = document.getElementById('mobileRegisterBtn');
+        const heroRegisterBtn = document.getElementById('heroRegisterBtn');
+        const heroGamesBtn = document.getElementById('heroGamesBtn');
+        const bottomRegisterBtn = document.getElementById('bottomRegisterBtn');
+        const bottomGamesBtn = document.getElementById('bottomGamesBtn');
+        
+        const loginModal = document.getElementById('loginModal');
+        const registerModal = document.getElementById('registerModal');
+        const closeLoginModal = document.getElementById('closeLoginModal');
+        const closeRegisterModal = document.getElementById('closeRegisterModal');
+        const switchToRegister = document.getElementById('switchToRegister');
+        const switchToLogin = document.getElementById('switchToLogin');
+        
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        
+        const ticTacToeModal = document.getElementById('ticTacToeModal');
+        const rockPaperScissorsModal = document.getElementById('rockPaperScissorsModal');
+        const triviaModal = document.getElementById('triviaModal');
+        
+        const successNotification = document.getElementById('successNotification');
+        const successMessage = document.getElementById('successMessage');
+
+        // Mobile menu toggle
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Show login modal
+        const showLoginModal = () => {
+            loginModal.classList.remove('hidden');
+            registerModal.classList.add('hidden');
+        };
+
+        // Show register modal
+        const showRegisterModal = () => {
+            registerModal.classList.remove('hidden');
+            loginModal.classList.add('hidden');
+        };
+
+        // Close modals
+        const closeAllModals = () => {
+            loginModal.classList.add('hidden');
+            registerModal.classList.add('hidden');
+            ticTacToeModal.classList.add('hidden');
+            rockPaperScissorsModal.classList.add('hidden');
+            triviaModal.classList.add('hidden');
+        };
+
+        // Event listeners for login/register buttons
+        loginBtn.addEventListener('click', showLoginModal);
+        registerBtn.addEventListener('click', showRegisterModal);
+        mobileLoginBtn.addEventListener('click', showLoginModal);
+        mobileRegisterBtn.addEventListener('click', showRegisterModal);
+        heroRegisterBtn.addEventListener('click', showRegisterModal);
+        bottomRegisterBtn.addEventListener('click', showRegisterModal);
+        
+        // Event listeners for close buttons
+        closeLoginModal.addEventListener('click', closeAllModals);
+        closeRegisterModal.addEventListener('click', closeAllModals);
+        
+        // Switch between login and register
+        switchToRegister.addEventListener('click', showRegisterModal);
+        switchToLogin.addEventListener('click', showLoginModal);
+        
+        // Form submissions
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            // In a real app, you would handle authentication here
+            showSuccessNotification('Logged in successfully!');
+            closeAllModals();
+        });
+        
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            // In a real app, you would handle registration here
+            showSuccessNotification('Account created successfully!');
+            closeAllModals();
+        });
+        
+        // Show success notification
+        const showSuccessNotification = (message) => {
+            successMessage.textContent = message;
+            successNotification.classList.remove('hidden');
+            setTimeout(() => {
+                successNotification.classList.add('hidden');
+            }, 3000);
+        };
+        
+        // Scroll to games section
+        heroGamesBtn.addEventListener('click', () => {
+            document.getElementById('games').scrollIntoView({ behavior: 'smooth' });
+        });
+        
+        bottomGamesBtn.addEventListener('click', () => {
+            document.getElementById('games').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // Tic Tac Toe Game Logic
+        const ticTacToeCells = document.querySelectorAll('.tic-tac-toe-cell');
+        const ticTacToeStatus = document.getElementById('ticTacToeStatus');
+        const ticTacToeReset = document.getElementById('ticTacToeReset');
+        const ticTacToeClose = document.getElementById('ticTacToeClose');
+        const closeTicTacToeModal = document.getElementById('closeTicTacToeModal');
+        
+        let currentPlayer = 'X';
+        let gameState = ['', '', '', '', '', '', '', '', ''];
+        let gameActive = true;
+        
+        const winningConditions = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
+            [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
+            [0, 4, 8], [2, 4, 6]             // diagonals
+        ];
+        
+        const handleCellClick = (e) => {
+            const clickedCell = e.target;
+            const clickedCellIndex = parseInt(clickedCell.getAttribute('data-cell'));
+            
+            if (gameState[clickedCellIndex] !== '' || !gameActive) {
+                return;
+            }
+            
+            gameState[clickedCellIndex] = currentPlayer;
+            clickedCell.textContent = currentPlayer;
+            
+            if (currentPlayer === 'X') {
+                clickedCell.classList.add('text-purple-500');
+            } else {
+                clickedCell.classList.add('text-pink-500');
+            }
+            
+            checkResult();
+        };
+        
+        const checkResult = () => {
+            let roundWon = false;
+            
+            for (let i = 0; i < winningConditions.length; i++) {
+                const [a, b, c] = winningConditions[i];
+                
+                if (gameState[a] === '' || gameState[b] === '' || gameState[c] === '') {
+                    continue;
+                }
+                
+                if (gameState[a] === gameState[b] && gameState[b] === gameState[c]) {
+                    roundWon = true;
+                    break;
+                }
+            }
+            
+            if (roundWon) {
+                ticTacToeStatus.textContent = `Player ${currentPlayer} wins!`;
+                ticTacToeStatus.classList.add('text-yellow-400');
+                gameActive = false;
+                return;
+            }
+            
+            if (!gameState.includes('')) {
+                ticTacToeStatus.textContent = 'Game ended in a draw!';
+                ticTacToeStatus.classList.add('text-gray-400');
+                gameActive = false;
+                return;
+            }
+            
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            ticTacToeStatus.textContent = `Player ${currentPlayer}'s turn`;
+        };
+        
+        const resetGame = () => {
+            currentPlayer = 'X';
+            gameState = ['', '', '', '', '', '', '', '', ''];
+            gameActive = true;
+            ticTacToeStatus.textContent = `Player ${currentPlayer}'s turn`;
+            ticTacToeStatus.classList.remove('text-yellow-400', 'text-gray-400');
+            ticTacToeStatus.classList.add('text-purple-400');
+            
+            ticTacToeCells.forEach(cell => {
+                cell.textContent = '';
+                cell.classList.remove('text-purple-500', 'text-pink-500');
+            });
+        };
+        
+        ticTacToeCells.forEach(cell => {
+            cell.addEventListener('click', handleCellClick);
+        });
+        
+        ticTacToeReset.addEventListener('click', resetGame);
+        ticTacToeClose.addEventListener('click', closeAllModals);
+        closeTicTacToeModal.addEventListener('click', closeAllModals);
+        
+        // Rock Paper Scissors Game Logic
+        const rpsChoices = document.querySelectorAll('.rps-choice');
+        const playerChoiceDisplay = document.getElementById('playerChoice');
+        const computerChoiceDisplay = document.getElementById('computerChoice');
+        const rpsStatus = document.getElementById('rpsStatus');
+        const rpsReset = document.getElementById('rpsReset');
+        const rpsClose = document.getElementById('rpsClose');
+        const closeRockPaperScissorsModal = document.getElementById('closeRockPaperScissorsModal');
+        
+        const choices = ['✊', '✋', '✌️'];
+        
+        rpsChoices.forEach(choice => {
+            choice.addEventListener('click', () => {
+                const playerChoice = choice.getAttribute('data-choice');
+                const computerChoice = choices[Math.floor(Math.random() * choices.length)];
+                
+                playerChoiceDisplay.textContent = playerChoice;
+                computerChoiceDisplay.textContent = computerChoice;
+                
+                let result = determineWinner(playerChoice, computerChoice);
+                
+                rpsStatus.textContent = result.message;
+                
+                if (result.winner === 'player') {
+                    rpsStatus.classList.remove('text-pink-400', 'text-gray-400');
+                    rpsStatus.classList.add('text-green-400');
+                    playerChoiceDisplay.classList.add('text-green-500');
+                    computerChoiceDisplay.classList.add('text-red-500');
+                } else if (result.winner === 'computer') {
+                    rpsStatus.classList.remove('text-pink-400', 'text-gray-400');
+                    rpsStatus.classList.add('text-red-400');
+                    playerChoiceDisplay.classList.add('text-red-500');
+                    computerChoiceDisplay.classList.add('text-green-500');
+                } else {
+                    rpsStatus.classList.remove('text-pink-400', 'text-green-400', 'text-red-400');
+                    rpsStatus.classList.add('text-gray-400');
+                    playerChoiceDisplay.classList.add('text-yellow-500');
+                    computerChoiceDisplay.classList.add('text-yellow-500');
+                }
+            });
+        });
+        
+        const determineWinner = (player, computer) => {
+            if (player === computer) {
+                return { winner: 'draw', message: "It's a draw!" };
+            }
+            
+            if (
+                (player === '✊' && computer === '✌️') ||
+                (player === '✋' && computer === '✊') ||
+                (player === '✌️' && computer === '✋')
+            ) {
+                return { winner: 'player', message: "You win!" };
+            }
+            
+            return { winner: 'computer', message: "Computer wins!" };
+        };
+        
+        rpsReset.addEventListener('click', () => {
+            playerChoiceDisplay.textContent = '?';
+            computerChoiceDisplay.textContent = '?';
+            rpsStatus.textContent = 'Choose your move!';
+            rpsStatus.classList.remove('text-green-400', 'text-red-400', 'text-gray-400');
+            rpsStatus.classList.add('text-pink-400');
+            playerChoiceDisplay.classList.remove('text-green-500', 'text-red-500', 'text-yellow-500');
+            computerChoiceDisplay.classList.remove('text-green-500', 'text-red-500', 'text-yellow-500');
+        });
+        
+        rpsClose.addEventListener('click', closeAllModals);
+        closeRockPaperScissorsModal.addEventListener('click', closeAllModals);
+        
+        // Trivia Game Logic
+        const triviaQuestion = document.getElementById('triviaQuestion');
+        const triviaOptions = document.querySelectorAll('.trivia-option');
+        const triviaStatus = document.getElementById('triviaStatus');
+        const triviaScore = document.getElementById('triviaScore');
+        const triviaFeedback = document.getElementById('triviaFeedback');
+        const triviaNext = document.getElementById('triviaNext');
+        const triviaGameArea = document.getElementById('triviaGameArea');
+        const triviaResults = document.getElementById('triviaResults');
+        const finalScore = document.getElementById('finalScore');
+        const scoreBar = document.getElementById('scoreBar');
+        const triviaRestart = document.getElementById('triviaRestart');
+        const triviaExit = document.getElementById('triviaExit');
+        const closeTriviaModal = document.getElementById('closeTriviaModal');
+        
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let questions = [];
+        
+        // Sample trivia questions
+        const sampleQuestions = [
+            {
+                question: "What is the capital of France?",
+                options: ["London", "Berlin", "Paris", "Madrid"],
+                answer: 2
+            },
+            {
+                question: "Which planet is known as the Red Planet?",
+                options: ["Venus", "Mars", "Jupiter", "Saturn"],
+                answer: 1
+            },
+            {
+                question: "Who painted the Mona Lisa?",
+                options: ["Vincent van Gogh", "Pablo Picasso", "Leonardo da Vinci", "Michelangelo"],
+                answer: 2
+            },
+            {
+                question: "What is the largest mammal in the world?",
+                options: ["Elephant", "Blue Whale", "Giraffe", "Polar Bear"],
+                answer: 1
+            },
+            {
+                question: "Which language is primarily used for web development?",
+                options: ["Java", "C++", "Python", "JavaScript"],
+                answer: 3
+            }
+        ];
+        
+        const startTriviaGame = () => {
+            questions = [...sampleQuestions];
+            currentQuestionIndex = 0;
+            score = 0;
+            triviaGameArea.classList.remove('hidden');
+            triviaResults.classList.add('hidden');
+            loadQuestion();
+        };
+        
+        const loadQuestion = () => {
+            const currentQuestion = questions[currentQuestionIndex];
+            triviaQuestion.textContent = currentQuestion.question;
+            triviaStatus.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+            triviaScore.textContent = `Score: ${score}`;
+            
+            triviaOptions.forEach((option, index) => {
+                option.querySelector('.option-text').textContent = currentQuestion.options[index];
+                option.dataset.optionIndex = index;
+                option.classList.remove('bg-green-500', 'bg-red-500', 'hover:bg-gray-600');
+                option.classList.add('bg-gray-700', 'hover:bg-gray-600');
+                option.disabled = false;
+            });
+            
+            triviaFeedback.classList.add('hidden');
+            triviaNext.classList.add('hidden');
+        };
+        
+        const handleOptionClick = (e) => {
+            const selectedOption = e.currentTarget;
+            const selectedIndex = parseInt(selectedOption.dataset.optionIndex);
+            const currentQuestion = questions[currentQuestionIndex];
+            
+            // Disable all options after selection
+            triviaOptions.forEach(option => {
+                option.disabled = true;
+                option.classList.remove('hover:bg-gray-600');
+            });
+            
+            // Check if answer is correct
+            if (selectedIndex === currentQuestion.answer) {
+                selectedOption.classList.remove('bg-gray-700');
+                selectedOption.classList.add('bg-green-500');
+                triviaFeedback.textContent = "Correct!";
+                triviaFeedback.classList.remove('hidden', 'bg-red-600');
+                triviaFeedback.classList.add('bg-green-600');
+                score++;
+                triviaScore.textContent = `Score: ${score}`;
+            } else {
+                selectedOption.classList.remove('bg-gray-700');
+                selectedOption.classList.add('bg-red-500');
+                triviaFeedback.textContent = `Incorrect! The correct answer was: ${currentQuestion.options[currentQuestion.answer]}`;
+                triviaFeedback.classList.remove('hidden', 'bg-green-600');
+                triviaFeedback.classList.add('bg-red-600');
+                
+                // Highlight correct answer
+                triviaOptions[currentQuestion.answer].classList.remove('bg-gray-700');
+                triviaOptions[currentQuestion.answer].classList.add('bg-green-500');
+            }
+            
+            // Show next button
+            triviaNext.classList.remove('hidden');
+        };
+        
+        const showNextQuestion = () => {
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        };
+        
+        const showResults = () => {
+            triviaGameArea.classList.add('hidden');
+            triviaResults.classList.remove('hidden');
+            
+            finalScore.textContent = `${score}/${questions.length}`;
+            const percentage = (score / questions.length) * 100;
+            scoreBar.style.width = `${percentage}%`;
+            
+            if (percentage >= 80) {
+                finalScore.classList.add('text-green-500');
+            } else if (percentage >= 50) {
+                finalScore.classList.add('text-yellow-500');
+            } else {
+                finalScore.classList.add('text-red-500');
+            }
+        };
+        
+        triviaOptions.forEach(option => {
+            option.addEventListener('click', handleOptionClick);
+        });
+        
+        triviaNext.addEventListener('click', showNextQuestion);
+        triviaRestart.addEventListener('click', startTriviaGame);
+        triviaExit.addEventListener('click', closeAllModals);
+        closeTriviaModal.addEventListener('click', closeAllModals);
+        
+        // Game launch buttons
+        document.querySelector('.play-tic-tac-toe').addEventListener('click', () => {
+            resetGame();
+            ticTacToeModal.classList.remove('hidden');
+        });
+        
+        document.querySelector('.play-rock-paper-scissors').addEventListener('click', () => {
+            rpsReset.click();
+            rockPaperScissorsModal.classList.remove('hidden');
+        });
+        
+        document.querySelector('.play-trivia').addEventListener('click', () => {
+            startTriviaGame();
+            triviaModal.classList.remove('hidden');
+        });
+        
+        // M-Pesa STK Push Functionality
+        const mpesaPay = document.getElementById('mpesaPay');
+        const phoneNumber = document.getElementById('phoneNumber');
+        const amount = document.getElementById('amount');
+        
+        mpesaPay.addEventListener('click', async () => {
+            if (!phoneNumber.value || !amount.value) {
+                showSuccessNotification('Please fill all fields');
+                return;
+            }
+            
+            if (phoneNumber.value.length !== 10 || !phoneNumber.value.startsWith('07')) {
+                showSuccessNotification('Please enter a valid M-Pesa number (07XXXXXXXX)');
+                return;
+            }
+            
+            if (amount.value < 10 || amount.value > 70000) {
+                showSuccessNotification('Amount must be between KES 10 and KES 70,000');
+                return;
+            }
+            
+            try {
+                // In a real app, you would call your backend API to initiate STK push
+                showSuccessNotification('STK Push sent to your phone. Please enter your M-Pesa PIN');
+                
+                // Simulate successful payment after 5 seconds
+                setTimeout(() => {
+                    showSuccessNotification('Payment successful! Funds added to your account');
+                    phoneNumber.value = '';
+                    amount.value = '';
+                }, 5000);
+            } catch (error) {
+                showSuccessNotification('Payment failed. Please try again');
+                console.error('M-Pesa error:', error);
+            }
+        });
+
+        // Leaderboard Data
+        const leaderboardBody = document.getElementById('leaderboardBody');
+        const leaderboardData = [
+            { rank: 1, name: "GameMaster", score: 1250, gamesWon: 42, avatar: "GM" },
+            { rank: 2, name: "TriviaKing", score: 980, gamesWon: 35, avatar: "TK" },
+            { rank: 3, name: "RPSChamp", score: 875, gamesWon: 28, avatar: "RC" },
+            { rank: 4, name: "TicTacPro", score: 760, gamesWon: 25, avatar: "TP" },
+            { rank: 5, name: "NewPlayer", score: 450, gamesWon: 15, avatar: "NP" }
+        ];
+
+        // Populate leaderboard
+        function updateLeaderboard() {
+            leaderboardBody.innerHTML = '';
+            leaderboardData.forEach(player => {
+                const row = document.createElement('tr');
+                row.className = 'border-b border-gray-700 hover:bg-gray-700';
+                
+                row.innerHTML = `
+                    <td class="py-4 px-6 font-bold ${player.rank <= 3 ? 'text-yellow-400' : 'text-gray-400'}">${player.rank}</td>
+                    <td class="py-4 px-6 flex items-center">
+                        <div class="w-10 h-10 rounded-full ${getAvatarColor(player.rank)} flex items-center justify-center text-white font-bold mr-4">${player.avatar}</div>
+                        ${player.name}
+                    </td>
+                    <td class="py-4 px-6">${player.score}</td>
+                    <td class="py-4 px-6">${player.gamesWon}</td>
+                `;
+                
+                leaderboardBody.appendChild(row);
+            });
+        }
+
+        function getAvatarColor(rank) {
+            switch(rank) {
+                case 1: return 'bg-yellow-500';
+                case 2: return 'bg-gray-400';
+                case 3: return 'bg-amber-700';
+                default: return 'bg-purple-500';
+            }
+        }
+
+        // Initialize leaderboard
+        updateLeaderboard();
+
+        // Initialize games when modals are opened
+        ticTacToeModal.addEventListener('click', (e) => {
+            if (e.target === ticTacToeModal) {
+                closeAllModals();
+            }
+        });
+        
+        rockPaperScissorsModal.addEventListener('click', (e) => {
+            if (e.target === rockPaperScissorsModal) {
+                closeAllModals();
+            }
+        });
+        
+        triviaModal.addEventListener('click', (e) => {
+            if (e.target === triviaModal) {
+                closeAllModals();
+            }
+        });
+        
+        loginModal.addEventListener('click', (e) => {
+            if (e.target === loginModal) {
+                closeAllModals();
+            }
+        });
+        
+        registerModal.addEventListener('click', (e) => {
+            if (e.target === registerModal) {
+                closeAllModals();
+            }
+        });
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FetroGames - Multiplayer Web Game Platform</title>
+    <meta name="description" content="Real-time multiplayer gaming platform with Tic-Tac-Toe, Rock-Paper-Scissors and Trivia games">
+    <meta name="author" content="Feril Kimei">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        .game-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .game-card {
+            transition: all 0.3s ease;
+        }
+        .auth-form {
+            backdrop-filter: blur(10px);
+        }
+        .trivia-option:hover {
+            transform: scale(1.02);
+        }
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-gray-800/50 backdrop-blur-md shadow-lg fixed w-full z-10 border-b border-gray-700/50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="#" class="flex-shrink-0 flex items-center">
+                        <i class="fas fa-gamepad text-purple-500 text-2xl mr-2"></i>
+                        <span class="font-bold text-xl bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">FetroGames</span>
+                    </a>
+                </div>
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="/" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">Home</a>
+                    <a href="/dashboard" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">Dashboard</a>
+                    <a href="/games" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">Games</a>
+                    <button id="loginBtn" class="px-4 py-2 rounded-md text-sm font-medium bg-purple-600 hover:bg-purple-700">Login</button>
+                    <button id="registerBtn" class="px-4 py-2 rounded-md text-sm font-medium bg-pink-600 hover:bg-pink-700 ml-2">Register</button>
+                </div>
+                <div class="md:hidden flex items-center">
+                    <button id="mobileMenuBtn" class="text-gray-300 hover:text-white focus:outline-none">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile menu -->
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-800 pb-3 px-2">
+            <a href="#home" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700">Home</a>
+            <a href="#games" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700">Games</a>
+            <a href="#features" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700">Features</a>
+            <button id="mobileLoginBtn" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium bg-purple-600 hover:bg-purple-700 mt-2">Login</button>
+            <button id="mobileRegisterBtn" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium bg-pink-600 hover:bg-pink-700 mt-2">Register</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="pt-24 pb-16 md:pt-32 md:pb-24 px-4 bg-gradient-to-b from-gray-800 to-gray-900">
+        <div class="max-w-7xl mx-auto">
+            <div class="md:flex items-center">
+                <div class="md:w-1/2 mb-10 md:mb-0">
+                    <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight animate-fade-in">
+                        <span class="bg-gradient-to-r from-purple-300 to-pink-400 bg-clip-text text-transparent">Play</span> and <span class="bg-gradient-to-r from-pink-300 to-purple-400 bg-clip-text text-transparent">Compete</span> with Friends
+                    </h1>
+                    <p class="text-lg md:text-xl text-gray-300 mb-8">
+                        Join FetroGames and challenge your friends in exciting multiplayer games. Win rewards, climb leaderboards, and have fun!
+                    </p>
+                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                        <button id="heroRegisterBtn" class="px-8 py-3 rounded-lg font-bold bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 transition duration-300 transform hover:scale-105">
+                            Get Started - It's Free
+                        </button>
+                        <button id="heroGamesBtn" class="px-8 py-3 rounded-lg font-bold bg-gray-700 hover:bg-gray-600 transition duration-300">
+                            Explore Games
+                        </button>
+                    </div>
+                </div>
+                <div class="md:w-1/2 flex justify-center">
+                    <div class="relative w-full max-w-md">
+                        <div class="absolute -top-10 -left-10 w-32 h-32 bg-purple-500 rounded-full opacity-20 filter blur-3xl"></div>
+                        <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-pink-500 rounded-full opacity-20 filter blur-3xl"></div>
+                        <div class="relative floating animate-float">
+                            <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                                 alt="Gaming Illustration" 
+                                 class="rounded-2xl shadow-2xl border-4 border-gray-700">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-16 px-4 bg-gray-900/40 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Why Choose FetroGames?</h2>
+                <p class="text-lg text-gray-400 max-w-3xl mx-auto">
+                    We provide the best multiplayer gaming experience with cutting-edge features
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-gray-800/50 p-8 rounded-xl hover:bg-gray-700/50 transition duration-300 border border-gray-700/30 hover:border-purple-500/30 hover:shadow-lg hover:shadow-purple-500/10">
+                    <div class="w-16 h-16 bg-purple-500 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-bolt text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Real-time Multiplayer</h3>
+                    <p class="text-gray-400">
+                        Play with friends or random opponents in real-time with our low-latency technology.
+                    </p>
+                </div>
+                
+                <div class="bg-gray-800 p-8 rounded-xl hover:bg-gray-700 transition duration-300">
+                    <div class="w-16 h-16 bg-pink-500 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-trophy text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Rewards System</h3>
+                    <p class="text-gray-400">
+                        Earn points and rewards for your victories. Compete in tournaments for bigger prizes.
+                    </p>
+                </div>
+                
+                <div class="bg-gray-800 p-8 rounded-xl hover:bg-gray-700 transition duration-300">
+                    <div class="w-16 h-16 bg-indigo-500 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-shield-alt text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Secure Platform</h3>
+                    <p class="text-gray-400">
+                        Your data is protected with industry-standard security measures and encryption.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Games Section -->
+    <section id="games" class="py-16 px-4 bg-gray-800/50 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Our Games</h2>
+                <p class="text-lg text-gray-400 max-w-3xl mx-auto">
+                    Challenge your friends in these exciting multiplayer games
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Tic Tac Toe Card -->
+                <div class="game-card bg-gray-900/50 rounded-xl overflow-hidden shadow-lg border border-gray-700/30 hover:border-purple-500/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/10">
+                    <div class="h-48 bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
+                        <i class="fas fa-times-circle text-white text-7xl opacity-80"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-3">Tic Tac Toe</h3>
+                        <p class="text-gray-400 mb-4">The classic game with a competitive twist. Play against friends or AI.</p>
+                        <button class="play-tic-tac-toe w-full py-2 bg-purple-600 hover:bg-purple-700 rounded-lg font-medium">
+                            Play Now
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Rock Paper Scissors Card -->
+                <div class="game-card bg-gray-900 rounded-xl overflow-hidden shadow-lg">
+                    <div class="h-48 bg-gradient-to-r from-pink-500 to-yellow-500 flex items-center justify-center">
+                        <i class="fas fa-hand-rock text-white text-7xl opacity-80"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-3">Rock Paper Scissors</h3>
+                        <p class="text-gray-400 mb-4">Test your luck and strategy in this enhanced version with special moves.</p>
+                        <button class="play-rock-paper-scissors w-full py-2 bg-pink-600 hover:bg-pink-700 rounded-lg font-medium">
+                            Play Now
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Trivia Card -->
+                <div class="game-card bg-gray-900 rounded-xl overflow-hidden shadow-lg">
+                    <div class="h-48 bg-gradient-to-r from-indigo-500 to-blue-500 flex items-center justify-center">
+                        <i class="fas fa-brain text-white text-7xl opacity-80"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-3">Trivia Challenge</h3>
+                        <p class="text-gray-400 mb-4">Test your knowledge across various categories in real-time battles.</p>
+                        <button class="play-trivia w-full py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg font-medium">
+                            Play Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-16 px-4 bg-gray-900">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div class="p-6">
+                    <div class="text-4xl font-bold text-purple-500 mb-2">10K+</div>
+                    <div class="text-gray-400">Active Players</div>
+                </div>
+                <div class="p-6">
+                    <div class="text-4xl font-bold text-pink-500 mb-2">500+</div>
+                    <div class="text-gray-400">Daily Matches</div>
+                </div>
+                <div class="p-6">
+                    <div class="text-4xl font-bold text-indigo-500 mb-2">50+</div>
+                    <div class="text-gray-400">Tournaments</div>
+                </div>
+                <div class="p-6">
+                    <div class="text-4xl font-bold text-blue-500 mb-2">24/7</div>
+                    <div class="text-gray-400">Support</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="py-16 px-4 bg-gray-800">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">What Players Say</h2>
+                <p class="text-lg text-gray-400 max-w-3xl mx-auto">
+                    Hear from our amazing community of gamers
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-gray-900 p-8 rounded-xl">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-purple-500 flex items-center justify-center text-white font-bold mr-4">JD</div>
+                        <div>
+                            <h4 class="font-bold">John Doe</h4>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-400">
+                        "The best multiplayer platform I've used. The trivia game is incredibly fun and competitive!"
+                    </p>
+                </div>
+                
+                <div class="bg-gray-900 p-8 rounded-xl">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-pink-500 flex items-center justify-center text-white font-bold mr-4">AS</div>
+                        <div>
+                            <h4 class="font-bold">Alice Smith</h4>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-400">
+                        "I love playing Rock Paper Scissors with my friends. The interface is smooth and intuitive."
+                    </p>
+                </div>
+                
+                <div class="bg-gray-900 p-8 rounded-xl">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold mr-4">MJ</div>
+                        <div>
+                            <h4 class="font-bold">Mike Johnson</h4>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-400">
+                        "The rewards system keeps me coming back. I've won several tournaments already!"
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 px-4 bg-gradient-to-r from-purple-900 to-pink-900">
+        <div class="max-w-7xl mx-auto text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready to Start Playing?</h2>
+            <p class="text-lg text-purple-200 max-w-3xl mx-auto mb-8">
+                Join thousands of players in exciting multiplayer battles. It's free to sign up!
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                <button id="bottomRegisterBtn" class="px-8 py-3 rounded-lg font-bold bg-white text-purple-900 hover:bg-gray-100 transition duration-300 transform hover:scale-105">
+                    Create Free Account
+                </button>
+                <button id="bottomGamesBtn" class="px-8 py-3 rounded-lg font-bold bg-transparent border-2 border-white hover:bg-white hover:bg-opacity-10 transition duration-300">
+                    Explore Games
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- M-Pesa Payment Section -->
+    <section id="mpesa" class="py-16 px-4 bg-gray-800">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Add Funds via M-Pesa</h2>
+                <p class="text-lg text-gray-400 max-w-3xl mx-auto">
+                    Deposit money to your account instantly using M-Pesa
+                </p>
+            </div>
+            
+            <div class="max-w-md mx-auto bg-gray-900 p-8 rounded-xl">
+                <div class="mb-6">
+                    <label for="phoneNumber" class="block text-gray-400 mb-2">M-Pesa Phone Number</label>
+                    <input type="tel" id="phoneNumber" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="07XXXXXXXX" required>
+                </div>
+                
+                <div class="mb-6">
+                    <label for="amount" class="block text-gray-400 mb-2">Amount (KES)</label>
+                    <input type="number" id="amount" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="100" min="10" max="70000" required>
+                </div>
+                
+                <button id="mpesaPay" class="w-full py-3 bg-green-600 hover:bg-green-700 rounded-lg font-medium flex items-center justify-center">
+                    <i class="fas fa-mobile-alt mr-2"></i> Pay via M-Pesa
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Leaderboard Section -->
+    <section id="leaderboard" class="py-16 px-4 bg-gray-900">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Top Players</h2>
+                <p class="text-lg text-gray-400 max-w-3xl mx-auto">
+                    Our current leaderboard champions
+                </p>
+            </div>
+            
+            <div class="bg-gray-800 rounded-xl overflow-hidden">
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-gray-700 text-left">
+                            <th class="py-4 px-6">Rank</th>
+                            <th class="py-4 px-6">Player</th>
+                            <th class="py-4 px-6">Score</th>
+                            <th class="py-4 px-6">Games Won</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardBody">
+                        <!-- Leaderboard data will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 py-12 px-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <a href="#" class="flex items-center mb-6">
+                        <i class="fas fa-gamepad text-purple-500 text-2xl mr-2"></i>
+                        <span class="font-bold text-xl bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">FetroGames</span>
+                    </a>
+                    <p class="text-gray-400">
+                        The ultimate multiplayer gaming platform. Play, compete, and win rewards with friends.
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Games</h4>
+                    <ul class="space-y-2">
+                        <li><a href="/games/tic-tac-toe" class="text-gray-400 hover:text-purple-400">Tic Tac Toe</a></li>
+                        <li><a href="/games/rock-paper-scissors" class="text-gray-400 hover:text-pink-400">Rock Paper Scissors</a></li>
+                        <li><a href="/games/trivia" class="text-gray-400 hover:text-indigo-400">Trivia Challenge</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Company</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-purple-400">About Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-pink-400">Careers</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-indigo-400">Blog</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-blue-400">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Connect With Us</h4>
+                    <div class="flex space-x-4 mb-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-purple-500 transition">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-pink-500 transition">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-blue-500 transition">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-red-500 transition">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                    <p class="text-gray-400">
+                        Subscribe to our newsletter for updates
+                    </p>
+                    <div class="mt-2 flex">
+                        <input type="email" placeholder="Your email" class="px-4 py-2 bg-gray-800 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-purple-500 w-full">
+                        <button class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-r-lg">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-500 mb-4 md:mb-0">
+                    © 2023 FetroGames. All rights reserved.
+                </p>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-500 hover:text-gray-400">Privacy Policy</a>
+                    <a href="#" class="text-gray-500 hover:text-gray-400">Terms of Service</a>
+                    <a href="#" class="text-gray-500 hover:text-gray-400">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-gray-800 rounded-xl max-w-md w-full mx-4 auth-form border border-gray-700">
+            <div class="p-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold">Login to FetroGames</h3>
+                    <button id="closeLoginModal" class="text-gray-400 hover:text-white">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <form id="loginForm">
+                    <div class="mb-4">
+                        <label for="loginEmail" class="block text-gray-400 mb-2">Email</label>
+                        <input type="email" id="loginEmail" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="your@email.com" required>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label for="loginPassword" class="block text-gray-400 mb-2">Password</label>
+                        <input type="password" id="loginPassword" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="••••••••" required>
+                    </div>
+                    
+                    <button type="submit" class="w-full py-2 bg-purple-600 hover:bg-purple-700 rounded-lg font-medium mb-4">
+                        Login
+                    </button>
+                    
+                    <div class="text-center text-gray-400">
+                        Don't have an account? <button id="switchToRegister" class="text-purple-400 hover:text-purple-300">Register</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-gray-800 rounded-xl max-w-md w-full mx-4 auth-form border border-gray-700">
+            <div class="p-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold">Create an Account</h3>
+                    <button id="closeRegisterModal" class="text-gray-400 hover:text-white">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <form id="registerForm">
+                    <div class="mb-4">
+                        <label for="registerUsername" class="block text-gray-400 mb-2">Username</label>
+                        <input type="text" id="registerUsername" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="gamemaster" required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="registerEmail" class="block text-gray-400 mb-2">Email</label>
+                        <input type="email" id="registerEmail" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="your@email.com" required>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label for="registerPassword" class="block text-gray-400 mb-2">Password</label>
+                        <input type="password" id="registerPassword" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="••••••••" required>
+                    </div>
+                    
+                    <button type="submit" class="w-full py-2 bg-pink-600 hover:bg-pink-700 rounded-lg font-medium mb-4">
+                        Create Account
+                    </button>
+                    
+                    <div class="text-center text-gray-400">
+                        Already have an account? <button id="switchToLogin" class="text-pink-400 hover:text-pink-300">Login</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tic Tac Toe Game Modal -->
+    <div id="ticTacToeModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-gray-800 rounded-xl max-w-md w-full mx-4 border border-gray-700">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold">Tic Tac Toe</h3>
+                    <button id="closeTicTacToeModal" class="text-gray-400 hover:text-white">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="text-center mb-6">
+                    <div id="ticTacToeStatus" class="text-lg font-medium text-purple-400">Player X's turn</div>
+                </div>
+                
+                <div class="grid grid-cols-3 gap-2 mb-6">
+                    <div class="tic-tac-toe-cell w-full h-24 bg-gray-700 rounded-lg flex items-center justify-center text-4xl font-bold cursor-pointer hover:bg-gray-600" data-cell="0"></div>
+                    <div class="tic-tac-toe-cell w-full h-24 bg-gray-700 rounded-lg flex items-center justify-center text-4xl font-bold cursor-pointer hover:bg-gray-600" data-cell="1"></div>
+                    <div class="tic-tac-toe-cell w-full h-24 bg-gray-700 rounded-lg flex items-center justify-center text-4xl font-bold cursor-pointer hover:bg-gray-600" data-cell="2"></div>
+                    <div class="tic-tac-toe-cell w-full h-24 bg-gray-700 rounded-lg flex items-center justify-center text-4xl font-bold cursor-pointer hover:bg-gray-600" data-cell="3"></div>
+                    <div class="tic-tac-toe-cell w-full h-24 bg-gray-700 rounded-lg flex items-center justify-center text-4xl font-bold cursor-pointer hover:bg-gray-600" data-cell="4"></div>
+                    <div class="tic-tac-toe-cell w-full h-24 bg-gray-700 rounded-lg flex items-center justify-center text-4xl font-bold cursor-pointer hover:bg-gray-600" data-cell="5"></div>
+                    <div class="tic-tac-toe-cell w-full h-24 bg-gray-700 rounded-lg flex items-center justify-center text-4xl font-bold cursor-pointer hover:bg-gray-600" data-cell="6"></div>
+                    <div class="tic-tac-toe-cell w-full h-24 bg-gray-700 rounded-lg flex items-center justify-center text-4xl font-bold cursor-pointer hover:bg-gray-600" data-cell="7"></div>
+                    <div class="tic-tac-toe-cell w-full h-24 bg-gray-700 rounded-lg flex items-center justify-center text-4xl font-bold cursor-pointer hover:bg-gray-600" data-cell="8"></div>
+                </div>
+                
+                <div class="flex justify-between">
+                    <button id="ticTacToeReset" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg">
+                        Reset Game
+                    </button>
+                    <button id="ticTacToeClose" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg">
+                        Exit Game
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rock Paper Scissors Game Modal -->
+    <div id="rockPaperScissorsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-gray-800 rounded-xl max-w-md w-full mx-4 border border-gray-700">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold">Rock Paper Scissors</h3>
+                    <button id="closeRockPaperScissorsModal" class="text-gray-400 hover:text-white">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="text-center mb-8">
+                    <div id="rpsStatus" class="text-lg font-medium text-pink-400 mb-4">Choose your move!</div>
+                    
+                    <div class="flex justify-center space-x-4 mb-8">
+                        <div class="text-center">
+                            <div class="text-lg font-medium mb-2">You</div>
+                            <div id="playerChoice" class="text-6xl">?</div>
+                        </div>
+                        <div class="text-center flex items-center">
+                            <div class="text-2xl mx-4">vs</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-lg font-medium mb-2">Opponent</div>
+                            <div id="computerChoice" class="text-6xl">?</div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-center space-x-4 mb-6">
+                        <button class="rps-choice px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg text-4xl" data-choice="✊">
+                            ✊
+                        </button>
+                        <button class="rps-choice px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg text-4xl" data-choice="✋">
+                            ✋
+                        </button>
+                        <button class="rps-choice px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg text-4xl" data-choice="✌️">
+                            ✌️
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between">
+                    <button id="rpsReset" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg">
+                        Play Again
+                    </button>
+                    <button id="rpsClose" class="px-4 py-2 bg-pink-600 hover:bg-pink-700 rounded-lg">
+                        Exit Game
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trivia Game Modal -->
+    <div id="triviaModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-gray-800 rounded-xl max-w-md w-full mx-4 border border-gray-700">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold">Trivia Challenge</h3>
+                    <button id="closeTriviaModal" class="text-gray-400 hover:text-white">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div id="triviaGameArea">
+                    <div class="text-center mb-6">
+                        <div id="triviaStatus" class="text-lg font-medium text-indigo-400 mb-2">Question 1 of 5</div>
+                        <div id="triviaScore" class="text-lg">Score: 0</div>
+                    </div>
+                    
+                    <div id="triviaQuestion" class="text-xl font-medium mb-6">
+                        Loading question...
+                    </div>
+                    
+                    <div id="triviaOptions" class="space-y-3 mb-6">
+                        <button class="trivia-option w-full px-4 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg text-left transition">
+                            <span class="font-medium mr-2">A.</span> <span class="option-text">Option A</span>
+                        </button>
+                        <button class="trivia-option w-full px-4 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg text-left transition">
+                            <span class="font-medium mr-2">B.</span> <span class="option-text">Option B</span>
+                        </button>
+                        <button class="trivia-option w-full px-4 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg text-left transition">
+                            <span class="font-medium mr-2">C.</span> <span class="option-text">Option C</span>
+                        </button>
+                        <button class="trivia-option w-full px-4 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg text-left transition">
+                            <span class="font-medium mr-2">D.</span> <span class="option-text">Option D</span>
+                        </button>
+                    </div>
+                    
+                    <div id="triviaFeedback" class="hidden mb-4 p-3 rounded-lg"></div>
+                    
+                    <button id="triviaNext" class="w-full py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg font-medium hidden">
+                        Next Question
+                    </button>
+                </div>
+                
+                <div id="triviaResults" class="hidden text-center">
+                    <div class="text-2xl font-bold mb-4">Quiz Completed!</div>
+                    <div id="finalScore" class="text-4xl font-bold text-indigo-500 mb-6">5/5</div>
+                    <div class="mb-6">
+                        <div class="text-lg mb-2">Your performance:</div>
+                        <div class="w-full bg-gray-700 rounded-full h-4">
+                            <div id="scoreBar" class="bg-indigo-500 h-4 rounded-full" style="width: 100%"></div>
+                        </div>
+                    </div>
+                    <button id="triviaRestart" class="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg font-medium mr-2">
+                        Play Again
+                    </button>
+                    <button id="triviaExit" class="px-6 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg font-medium">
+                        Exit
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Notification -->
+    <div id="successNotification" class="fixed bottom-4 right-4 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg hidden z-50">
+        <div class="flex items-center">
+            <i class="fas fa-check-circle mr-2"></i>
+            <span id="successMessage">Operation successful!</span>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Firebase configuration would be initialized here
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
+        
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+    </script>
+        // DOM Elements
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const loginBtn = document.getElementById('loginBtn');
+        const registerBtn = document.getElementById('registerBtn');
+        const mobileLoginBtn = document.getElementById('mobileLoginBtn');
+        const mobileRegisterBtn = document.getElementById('mobileRegisterBtn');
+        const heroRegisterBtn = document.getElementById('heroRegisterBtn');
+        const heroGamesBtn = document.getElementById('heroGamesBtn');
+        const bottomRegisterBtn = document.getElementById('bottomRegisterBtn');
+        const bottomGamesBtn = document.getElementById('bottomGamesBtn');
+        
+        const loginModal = document.getElementById('loginModal');
+        const registerModal = document.getElementById('registerModal');
+        const closeLoginModal = document.getElementById('closeLoginModal');
+        const closeRegisterModal = document.getElementById('closeRegisterModal');
+        const switchToRegister = document.getElementById('switchToRegister');
+        const switchToLogin = document.getElementById('switchToLogin');
+        
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        
+        const ticTacToeModal = document.getElementById('ticTacToeModal');
+        const rockPaperScissorsModal = document.getElementById('rockPaperScissorsModal');
+        const triviaModal = document.getElementById('triviaModal');
+        
+        const successNotification = document.getElementById('successNotification');
+        const successMessage = document.getElementById('successMessage');
+
+        // Mobile menu toggle
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Show login modal
+        const showLoginModal = () => {
+            loginModal.classList.remove('hidden');
+            registerModal.classList.add('hidden');
+        };
+
+        // Show register modal
+        const showRegisterModal = () => {
+            registerModal.classList.remove('hidden');
+            loginModal.classList.add('hidden');
+        };
+
+        // Close modals
+        const closeAllModals = () => {
+            loginModal.classList.add('hidden');
+            registerModal.classList.add('hidden');
+            ticTacToeModal.classList.add('hidden');
+            rockPaperScissorsModal.classList.add('hidden');
+            triviaModal.classList.add('hidden');
+        };
+
+        // Event listeners for login/register buttons
+        loginBtn.addEventListener('click', showLoginModal);
+        registerBtn.addEventListener('click', showRegisterModal);
+        mobileLoginBtn.addEventListener('click', showLoginModal);
+        mobileRegisterBtn.addEventListener('click', showRegisterModal);
+        heroRegisterBtn.addEventListener('click', showRegisterModal);
+        bottomRegisterBtn.addEventListener('click', showRegisterModal);
+        
+        // Event listeners for close buttons
+        closeLoginModal.addEventListener('click', closeAllModals);
+        closeRegisterModal.addEventListener('click', closeAllModals);
+        
+        // Switch between login and register
+        switchToRegister.addEventListener('click', showRegisterModal);
+        switchToLogin.addEventListener('click', showLoginModal);
+        
+        // Form submissions
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            // In a real app, you would handle authentication here
+            showSuccessNotification('Logged in successfully!');
+            closeAllModals();
+        });
+        
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            // In a real app, you would handle registration here
+            showSuccessNotification('Account created successfully!');
+            closeAllModals();
+        });
+        
+        // Show success notification
+        const showSuccessNotification = (message) => {
+            successMessage.textContent = message;
+            successNotification.classList.remove('hidden');
+            setTimeout(() => {
+                successNotification.classList.add('hidden');
+            }, 3000);
+        };
+        
+        // Scroll to games section
+        heroGamesBtn.addEventListener('click', () => {
+            document.getElementById('games').scrollIntoView({ behavior: 'smooth' });
+        });
+        
+        bottomGamesBtn.addEventListener('click', () => {
+            document.getElementById('games').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // Tic Tac Toe Game Logic
+        const ticTacToeCells = document.querySelectorAll('.tic-tac-toe-cell');
+        const ticTacToeStatus = document.getElementById('ticTacToeStatus');
+        const ticTacToeReset = document.getElementById('ticTacToeReset');
+        const ticTacToeClose = document.getElementById('ticTacToeClose');
+        const closeTicTacToeModal = document.getElementById('closeTicTacToeModal');
+        
+        let currentPlayer = 'X';
+        let gameState = ['', '', '', '', '', '', '', '', ''];
+        let gameActive = true;
+        
+        const winningConditions = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
+            [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
+            [0, 4, 8], [2, 4, 6]             // diagonals
+        ];
+        
+        const handleCellClick = (e) => {
+            const clickedCell = e.target;
+            const clickedCellIndex = parseInt(clickedCell.getAttribute('data-cell'));
+            
+            if (gameState[clickedCellIndex] !== '' || !gameActive) {
+                return;
+            }
+            
+            gameState[clickedCellIndex] = currentPlayer;
+            clickedCell.textContent = currentPlayer;
+            
+            if (currentPlayer === 'X') {
+                clickedCell.classList.add('text-purple-500');
+            } else {
+                clickedCell.classList.add('text-pink-500');
+            }
+            
+            checkResult();
+        };
+        
+        const checkResult = () => {
+            let roundWon = false;
+            
+            for (let i = 0; i < winningConditions.length; i++) {
+                const [a, b, c] = winningConditions[i];
+                
+                if (gameState[a] === '' || gameState[b] === '' || gameState[c] === '') {
+                    continue;
+                }
+                
+                if (gameState[a] === gameState[b] && gameState[b] === gameState[c]) {
+                    roundWon = true;
+                    break;
+                }
+            }
+            
+            if (roundWon) {
+                ticTacToeStatus.textContent = `Player ${currentPlayer} wins!`;
+                ticTacToeStatus.classList.add('text-yellow-400');
+                gameActive = false;
+                return;
+            }
+            
+            if (!gameState.includes('')) {
+                ticTacToeStatus.textContent = 'Game ended in a draw!';
+                ticTacToeStatus.classList.add('text-gray-400');
+                gameActive = false;
+                return;
+            }
+            
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            ticTacToeStatus.textContent = `Player ${currentPlayer}'s turn`;
+        };
+        
+        const resetGame = () => {
+            currentPlayer = 'X';
+            gameState = ['', '', '', '', '', '', '', '', ''];
+            gameActive = true;
+            ticTacToeStatus.textContent = `Player ${currentPlayer}'s turn`;
+            ticTacToeStatus.classList.remove('text-yellow-400', 'text-gray-400');
+            ticTacToeStatus.classList.add('text-purple-400');
+            
+            ticTacToeCells.forEach(cell => {
+                cell.textContent = '';
+                cell.classList.remove('text-purple-500', 'text-pink-500');
+            });
+        };
+        
+        ticTacToeCells.forEach(cell => {
+            cell.addEventListener('click', handleCellClick);
+        });
+        
+        ticTacToeReset.addEventListener('click', resetGame);
+        ticTacToeClose.addEventListener('click', closeAllModals);
+        closeTicTacToeModal.addEventListener('click', closeAllModals);
+        
+        // Rock Paper Scissors Game Logic
+        const rpsChoices = document.querySelectorAll('.rps-choice');
+        const playerChoiceDisplay = document.getElementById('playerChoice');
+        const computerChoiceDisplay = document.getElementById('computerChoice');
+        const rpsStatus = document.getElementById('rpsStatus');
+        const rpsReset = document.getElementById('rpsReset');
+        const rpsClose = document.getElementById('rpsClose');
+        const closeRockPaperScissorsModal = document.getElementById('closeRockPaperScissorsModal');
+        
+        const choices = ['✊', '✋', '✌️'];
+        
+        rpsChoices.forEach(choice => {
+            choice.addEventListener('click', () => {
+                const playerChoice = choice.getAttribute('data-choice');
+                const computerChoice = choices[Math.floor(Math.random() * choices.length)];
+                
+                playerChoiceDisplay.textContent = playerChoice;
+                computerChoiceDisplay.textContent = computerChoice;
+                
+                let result = determineWinner(playerChoice, computerChoice);
+                
+                rpsStatus.textContent = result.message;
+                
+                if (result.winner === 'player') {
+                    rpsStatus.classList.remove('text-pink-400', 'text-gray-400');
+                    rpsStatus.classList.add('text-green-400');
+                    playerChoiceDisplay.classList.add('text-green-500');
+                    computerChoiceDisplay.classList.add('text-red-500');
+                } else if (result.winner === 'computer') {
+                    rpsStatus.classList.remove('text-pink-400', 'text-gray-400');
+                    rpsStatus.classList.add('text-red-400');
+                    playerChoiceDisplay.classList.add('text-red-500');
+                    computerChoiceDisplay.classList.add('text-green-500');
+                } else {
+                    rpsStatus.classList.remove('text-pink-400', 'text-green-400', 'text-red-400');
+                    rpsStatus.classList.add('text-gray-400');
+                    playerChoiceDisplay.classList.add('text-yellow-500');
+                    computerChoiceDisplay.classList.add('text-yellow-500');
+                }
+            });
+        });
+        
+        const determineWinner = (player, computer) => {
+            if (player === computer) {
+                return { winner: 'draw', message: "It's a draw!" };
+            }
+            
+            if (
+                (player === '✊' && computer === '✌️') ||
+                (player === '✋' && computer === '✊') ||
+                (player === '✌️' && computer === '✋')
+            ) {
+                return { winner: 'player', message: "You win!" };
+            }
+            
+            return { winner: 'computer', message: "Computer wins!" };
+        };
+        
+        rpsReset.addEventListener('click', () => {
+            playerChoiceDisplay.textContent = '?';
+            computerChoiceDisplay.textContent = '?';
+            rpsStatus.textContent = 'Choose your move!';
+            rpsStatus.classList.remove('text-green-400', 'text-red-400', 'text-gray-400');
+            rpsStatus.classList.add('text-pink-400');
+            playerChoiceDisplay.classList.remove('text-green-500', 'text-red-500', 'text-yellow-500');
+            computerChoiceDisplay.classList.remove('text-green-500', 'text-red-500', 'text-yellow-500');
+        });
+        
+        rpsClose.addEventListener('click', closeAllModals);
+        closeRockPaperScissorsModal.addEventListener('click', closeAllModals);
+        
+        // Trivia Game Logic
+        const triviaQuestion = document.getElementById('triviaQuestion');
+        const triviaOptions = document.querySelectorAll('.trivia-option');
+        const triviaStatus = document.getElementById('triviaStatus');
+        const triviaScore = document.getElementById('triviaScore');
+        const triviaFeedback = document.getElementById('triviaFeedback');
+        const triviaNext = document.getElementById('triviaNext');
+        const triviaGameArea = document.getElementById('triviaGameArea');
+        const triviaResults = document.getElementById('triviaResults');
+        const finalScore = document.getElementById('finalScore');
+        const scoreBar = document.getElementById('scoreBar');
+        const triviaRestart = document.getElementById('triviaRestart');
+        const triviaExit = document.getElementById('triviaExit');
+        const closeTriviaModal = document.getElementById('closeTriviaModal');
+        
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let questions = [];
+        
+        // Sample trivia questions
+        const sampleQuestions = [
+            {
+                question: "What is the capital of France?",
+                options: ["London", "Berlin", "Paris", "Madrid"],
+                answer: 2
+            },
+            {
+                question: "Which planet is known as the Red Planet?",
+                options: ["Venus", "Mars", "Jupiter", "Saturn"],
+                answer: 1
+            },
+            {
+                question: "Who painted the Mona Lisa?",
+                options: ["Vincent van Gogh", "Pablo Picasso", "Leonardo da Vinci", "Michelangelo"],
+                answer: 2
+            },
+            {
+                question: "What is the largest mammal in the world?",
+                options: ["Elephant", "Blue Whale", "Giraffe", "Polar Bear"],
+                answer: 1
+            },
+            {
+                question: "Which language is primarily used for web development?",
+                options: ["Java", "C++", "Python", "JavaScript"],
+                answer: 3
+            }
+        ];
+        
+        const startTriviaGame = () => {
+            questions = [...sampleQuestions];
+            currentQuestionIndex = 0;
+            score = 0;
+            triviaGameArea.classList.remove('hidden');
+            triviaResults.classList.add('hidden');
+            loadQuestion();
+        };
+        
+        const loadQuestion = () => {
+            const currentQuestion = questions[currentQuestionIndex];
+            triviaQuestion.textContent = currentQuestion.question;
+            triviaStatus.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+            triviaScore.textContent = `Score: ${score}`;
+            
+            triviaOptions.forEach((option, index) => {
+                option.querySelector('.option-text').textContent = currentQuestion.options[index];
+                option.dataset.optionIndex = index;
+                option.classList.remove('bg-green-500', 'bg-red-500', 'hover:bg-gray-600');
+                option.classList.add('bg-gray-700', 'hover:bg-gray-600');
+                option.disabled = false;
+            });
+            
+            triviaFeedback.classList.add('hidden');
+            triviaNext.classList.add('hidden');
+        };
+        
+        const handleOptionClick = (e) => {
+            const selectedOption = e.currentTarget;
+            const selectedIndex = parseInt(selectedOption.dataset.optionIndex);
+            const currentQuestion = questions[currentQuestionIndex];
+            
+            // Disable all options after selection
+            triviaOptions.forEach(option => {
+                option.disabled = true;
+                option.classList.remove('hover:bg-gray-600');
+            });
+            
+            // Check if answer is correct
+            if (selectedIndex === currentQuestion.answer) {
+                selectedOption.classList.remove('bg-gray-700');
+                selectedOption.classList.add('bg-green-500');
+                triviaFeedback.textContent = "Correct!";
+                triviaFeedback.classList.remove('hidden', 'bg-red-600');
+                triviaFeedback.classList.add('bg-green-600');
+                score++;
+                triviaScore.textContent = `Score: ${score}`;
+            } else {
+                selectedOption.classList.remove('bg-gray-700');
+                selectedOption.classList.add('bg-red-500');
+                triviaFeedback.textContent = `Incorrect! The correct answer was: ${currentQuestion.options[currentQuestion.answer]}`;
+                triviaFeedback.classList.remove('hidden', 'bg-green-600');
+                triviaFeedback.classList.add('bg-red-600');
+                
+                // Highlight correct answer
+                triviaOptions[currentQuestion.answer].classList.remove('bg-gray-700');
+                triviaOptions[currentQuestion.answer].classList.add('bg-green-500');
+            }
+            
+            // Show next button
+            triviaNext.classList.remove('hidden');
+        };
+        
+        const showNextQuestion = () => {
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        };
+        
+        const showResults = () => {
+            triviaGameArea.classList.add('hidden');
+            triviaResults.classList.remove('hidden');
+            
+            finalScore.textContent = `${score}/${questions.length}`;
+            const percentage = (score / questions.length) * 100;
+            scoreBar.style.width = `${percentage}%`;
+            
+            if (percentage >= 80) {
+                finalScore.classList.add('text-green-500');
+            } else if (percentage >= 50) {
+                finalScore.classList.add('text-yellow-500');
+            } else {
+                finalScore.classList.add('text-red-500');
+            }
+        };
+        
+        triviaOptions.forEach(option => {
+            option.addEventListener('click', handleOptionClick);
+        });
+        
+        triviaNext.addEventListener('click', showNextQuestion);
+        triviaRestart.addEventListener('click', startTriviaGame);
+        triviaExit.addEventListener('click', closeAllModals);
+        closeTriviaModal.addEventListener('click', closeAllModals);
+        
+        // Game launch buttons
+        document.querySelector('.play-tic-tac-toe').addEventListener('click', () => {
+            resetGame();
+            ticTacToeModal.classList.remove('hidden');
+        });
+        
+        document.querySelector('.play-rock-paper-scissors').addEventListener('click', () => {
+            rpsReset.click();
+            rockPaperScissorsModal.classList.remove('hidden');
+        });
+        
+        document.querySelector('.play-trivia').addEventListener('click', () => {
+            startTriviaGame();
+            triviaModal.classList.remove('hidden');
+        });
+        
+        // M-Pesa STK Push Functionality
+        const mpesaPay = document.getElementById('mpesaPay');
+        const phoneNumber = document.getElementById('phoneNumber');
+        const amount = document.getElementById('amount');
+        
+        mpesaPay.addEventListener('click', async () => {
+            if (!phoneNumber.value || !amount.value) {
+                showSuccessNotification('Please fill all fields');
+                return;
+            }
+            
+            if (phoneNumber.value.length !== 10 || !phoneNumber.value.startsWith('07')) {
+                showSuccessNotification('Please enter a valid M-Pesa number (07XXXXXXXX)');
+                return;
+            }
+            
+            if (amount.value < 10 || amount.value > 70000) {
+                showSuccessNotification('Amount must be between KES 10 and KES 70,000');
+                return;
+            }
+            
+            try {
+                // In a real app, you would call your backend API to initiate STK push
+                showSuccessNotification('STK Push sent to your phone. Please enter your M-Pesa PIN');
+                
+                // Simulate successful payment after 5 seconds
+                setTimeout(() => {
+                    showSuccessNotification('Payment successful! Funds added to your account');
+                    phoneNumber.value = '';
+                    amount.value = '';
+                }, 5000);
+            } catch (error) {
+                showSuccessNotification('Payment failed. Please try again');
+                console.error('M-Pesa error:', error);
+            }
+        });
+
+        // Leaderboard Data
+        const leaderboardBody = document.getElementById('leaderboardBody');
+        const leaderboardData = [
+            { rank: 1, name: "GameMaster", score: 1250, gamesWon: 42, avatar: "GM" },
+            { rank: 2, name: "TriviaKing", score: 980, gamesWon: 35, avatar: "TK" },
+            { rank: 3, name: "RPSChamp", score: 875, gamesWon: 28, avatar: "RC" },
+            { rank: 4, name: "TicTacPro", score: 760, gamesWon: 25, avatar: "TP" },
+            { rank: 5, name: "NewPlayer", score: 450, gamesWon: 15, avatar: "NP" }
+        ];
+
+        // Populate leaderboard
+        function updateLeaderboard() {
+            leaderboardBody.innerHTML = '';
+            leaderboardData.forEach(player => {
+                const row = document.createElement('tr');
+                row.className = 'border-b border-gray-700 hover:bg-gray-700';
+                
+                row.innerHTML = `
+                    <td class="py-4 px-6 font-bold ${player.rank <= 3 ? 'text-yellow-400' : 'text-gray-400'}">${player.rank}</td>
+                    <td class="py-4 px-6 flex items-center">
+                        <div class="w-10 h-10 rounded-full ${getAvatarColor(player.rank)} flex items-center justify-center text-white font-bold mr-4">${player.avatar}</div>
+                        ${player.name}
+                    </td>
+                    <td class="py-4 px-6">${player.score}</td>
+                    <td class="py-4 px-6">${player.gamesWon}</td>
+                `;
+                
+                leaderboardBody.appendChild(row);
+            });
+        }
+
+        function getAvatarColor(rank) {
+            switch(rank) {
+                case 1: return 'bg-yellow-500';
+                case 2: return 'bg-gray-400';
+                case 3: return 'bg-amber-700';
+                default: return 'bg-purple-500';
+            }
+        }
+
+        // Initialize leaderboard
+        updateLeaderboard();
+
+        // Initialize games when modals are opened
+        ticTacToeModal.addEventListener('click', (e) => {
+            if (e.target === ticTacToeModal) {
+                closeAllModals();
+            }
+        });
+        
+        rockPaperScissorsModal.addEventListener('click', (e) => {
+            if (e.target === rockPaperScissorsModal) {
+                closeAllModals();
+            }
+        });
+        
+        triviaModal.addEventListener('click', (e) => {
+            if (e.target === triviaModal) {
+                closeAllModals();
+            }
+        });
+        
+        loginModal.addEventListener('click', (e) => {
+            if (e.target === loginModal) {
+                closeAllModals();
+            }
+        });
+        
+        registerModal.addEventListener('click', (e) => {
+            if (e.target === registerModal) {
+                closeAllModals();
+            }
+        });
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FetroGames - Multiplayer Web Game Platform</title>
+    <meta name="description" content="Real-time multiplayer gaming platform with Tic-Tac-Toe, Rock-Paper-Scissors and Trivia games">
+    <meta name="author" content="Feril Kimei">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        .game-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .game-card {
+            transition: all 0.3s ease;
+        }
+        .auth-form {
+            backdrop-filter: blur(10px);
+        }
+        .trivia-option:hover {
+            transform: scale(1.02);
+        }
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-gray-800/50 backdrop-blur-md shadow-lg fixed w-full z-10 border-b border-gray-700/50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="#" class="flex-shrink-0 flex items-center">
+                        <i class="fas fa-gamepad text-purple-500 text-2xl mr-2"></i>
+                        <span class="font-bold text-xl bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">FetroGames</span>
+                    </a>
+                </div>
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="/" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">Home</a>
+                    <a href="/dashboard" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">Dashboard</a>
+                    <a href="/games" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">Games</a>
+                    <button id="loginBtn" class="px-4 py-2 rounded-md text-sm font-medium bg-purple-600 hover:bg-purple-700">Login</button>
+                    <button id="registerBtn" class="px-4 py-2 rounded-md text-sm font-medium bg-pink-600 hover:bg-pink-700 ml-2">Register</button>
+                </div>
+                <div class="md:hidden flex items-center">
+                    <button id="mobileMenuBtn" class="text-gray-300 hover:text-white focus:outline-none">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile menu -->
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-800 pb-3 px-2">
+            <a href="#home" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700">Home</a>
+            <a href="#games" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700">Games</a>
+            <a href="#features" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700">Features</a>
+            <button id="mobileLoginBtn" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium bg-purple-600 hover:bg-purple-700 mt-2">Login</button>
+            <button id="mobileRegisterBtn" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium bg-pink-600 hover:bg-pink-700 mt-2">Register</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="pt-24 pb-16 md:pt-32 md:pb-24 px-4 bg-gradient-to-b from-gray-800 to-gray-900">
+        <div class="max-w-7xl mx-auto">
+            <div class="md:flex items-center">
+                <div class="md:w-1/2 mb-10 md:mb-0">
+                    <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight animate-fade-in">
+                        <span class="bg-gradient-to-r from-purple-300 to-pink-400 bg-clip-text text-transparent">Play</span> and <span class="bg-gradient-to-r from-pink-300 to-purple-400 bg-clip-text text-transparent">Compete</span> with Friends
+                    </h1>
+                    <p class="text-lg md:text-xl text-gray-300 mb-8">
+                        Join FetroGames and challenge your friends in exciting multiplayer games. Win rewards, climb leaderboards, and have fun!
+                    </p>
+                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                        <button id="heroRegisterBtn" class="px-8 py-3 rounded-lg font-bold bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 transition duration-300 transform hover:scale-105">
+                            Get Started - It's Free
+                        </button>
+                        <button id="heroGamesBtn" class="px-8 py-3 rounded-lg font-bold bg-gray-700 hover:bg-gray-600 transition duration-300">
+                            Explore Games
+                        </button>
+                    </div>
+                </div>
+                <div class="md:w-1/2 flex justify-center">
+                    <div class="relative w-full max-w-md">
+                        <div class="absolute -top-10 -left-10 w-32 h-32 bg-purple-500 rounded-full opacity-20 filter blur-3xl"></div>
+                        <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-pink-500 rounded-full opacity-20 filter blur-3xl"></div>
+                        <div class="relative floating animate-float">
+                            <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                                 alt="Gaming Illustration" 
+                                 class="rounded-2xl shadow-2xl border-4 border-gray-700">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-16 px-4 bg-gray-900/40 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Why Choose FetroGames?</h2>
+                <p class="text-lg text-gray-400 max-w-3xl mx-auto">
+                    We provide the best multiplayer gaming experience with cutting-edge features
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-gray-800/50 p-8 rounded-xl hover:bg-gray-700/50 transition duration-300 border border-gray-700/30 hover:border-purple-500/30 hover:shadow-lg hover:shadow-purple-500/10">
+                    <div class="w-16 h-16 bg-purple-500 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-bolt text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Real-time Multiplayer</h3>
+                    <p class="text-gray-400">
+                        Play with friends or random opponents in real-time with our low-latency technology.
+                    </p>
+                </div>
+                
+                <div class="bg-gray-800 p-8 rounded-xl hover:bg-gray-700 transition duration-300">
+                    <div class="w-16 h-16 bg-pink-500 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-trophy text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Rewards System</h3>
+                    <p class="text-gray-400">
+                        Earn points and rewards for your victories. Compete in tournaments for bigger prizes.
+                    </p>
+                </div>
+                
+                <div class="bg-gray-800 p-8 rounded-xl hover:bg-gray-700 transition duration-300">
+                    <div class="w-16 h-16 bg-indigo-500 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-shield-alt text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Secure Platform</h3>
+                    <p class="text-gray-400">
+                        Your data is protected with industry-standard security measures and encryption.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Games Section -->
+    <section id="games" class="py-16 px-4 bg-gray-800/50 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Our Games</h2>
+                <p class="text-lg text-gray-400 max-w-3xl mx-auto">
+                    Challenge your friends in these exciting multiplayer games
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Tic Tac Toe Card -->
+                <div class="game-card bg-gray-900/50 rounded-xl overflow-hidden shadow-lg border border-gray-700/30 hover:border-purple-500/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/10">
+                    <div class="h-48 bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
+                        <i class="fas fa-times-circle text-white text-7xl opacity-80"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-3">Tic Tac Toe</h3>
+                        <p class="text-gray-400 mb-4">The classic game with a competitive twist. Play against friends or AI.</p>
+                        <button class="play-tic-tac-toe w-full py-2 bg-purple-600 hover:bg-purple-700 rounded-lg font-medium">
+                            Play Now
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Rock Paper Scissors Card -->
+                <div class="game-card bg-gray-900 rounded-xl overflow-hidden shadow-lg">
+                    <div class="h-48 bg-gradient-to-r from-pink-500 to-yellow-500 flex items-center justify-center">
+                        <i class="fas fa-hand-rock text-white text-7xl opacity-80"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-3">Rock Paper Scissors</h3>
+                        <p class="text-gray-400 mb-4">Test your luck and strategy in this enhanced version with special moves.</p>
+                        <button class="play-rock-paper-scissors w-full py-2 bg-pink-600 hover:bg-pink-700 rounded-lg font-medium">
+                            Play Now
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Trivia Card -->
+                <div class="game-card bg-gray-900 rounded-xl overflow-hidden shadow-lg">
+                    <div class="h-48 bg-gradient-to-r from-indigo-500 to-blue-500 flex items-center justify-center">
+                        <i class="fas fa-brain text-white text-7xl opacity-80"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-3">Trivia Challenge</h3>
+                        <p class="text-gray-400 mb-4">Test your knowledge across various categories in real-time battles.</p>
+                        <button class="play-trivia w-full py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg font-medium">
+                            Play Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-16 px-4 bg-gray-900">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div class="p-6">
+                    <div class="text-4xl font-bold text-purple-500 mb-2">10K+</div>
+                    <div class="text-gray-400">Active Players</div>
+                </div>
+                <div class="p-6">
+                    <div class="text-4xl font-bold text-pink-500 mb-2">500+</div>
+                    <div class="text-gray-400">Daily Matches</div>
+                </div>
+                <div class="p-6">
+                    <div class="text-4xl font-bold text-indigo-500 mb-2">50+</div>
+                    <div class="text-gray-400">Tournaments</div>
+                </div>
+                <div class="p-6">
+                    <div class="text-4xl font-bold text-blue-500 mb-2">24/7</div>
+                    <div class="text-gray-400">Support</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="py-16 px-4 bg-gray-800">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">What Players Say</h2>
+                <p class="text-lg text-gray-400 max-w-3xl mx-auto">
+                    Hear from our amazing community of gamers
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-gray-900 p-8 rounded-xl">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-purple-500 flex items-center justify-center text-white font-bold mr-4">JD</div>
+                        <div>
+                            <h4 class="font-bold">John Doe</h4>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-400">
+                        "The best multiplayer platform I've used. The trivia game is incredibly fun and competitive!"
+                    </p>
+                </div>
+                
+                <div class="bg-gray-900 p-8 rounded-xl">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-pink-500 flex items-center justify-center text-white font-bold mr-4">AS</div>
+                        <div>
+                            <h4 class="font-bold">Alice Smith</h4>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-400">
+                        "I love playing Rock Paper Scissors with my friends. The interface is smooth and intuitive."
+                    </p>
+                </div>
+                
+                <div class="bg-gray-900 p-8 rounded-xl">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold mr-4">MJ</div>
+                        <div>
+                            <h4 class="font-bold">Mike Johnson</h4>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-400">
+                        "The rewards system keeps me coming back. I've won several tournaments already!"
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 px-4 bg-gradient-to-r from-purple-900 to-pink-900">
+        <div class="max-w-7xl mx-auto text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready to Start Playing?</h2>
+            <p class="text-lg text-purple-200 max-w-3xl mx-auto mb-8">
+                Join thousands of players in exciting multiplayer battles. It's free to sign up!
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                <button id="bottomRegisterBtn" class="px-8 py-3 rounded-lg font-bold bg-white text-purple-900 hover:bg-gray-100 transition duration-300 transform hover:scale-105">
+                    Create Free Account
+                </button>
+                <button id="bottomGamesBtn" class="px-8 py-3 rounded-lg font-bold bg-transparent border-2 border-white hover:bg-white hover:bg-opacity-10 transition duration-300">
+                    Explore Games
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- M-Pesa Payment Section -->
+    <section id="mpesa" class="py-16 px-4 bg-gray-800">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Add Funds via M-Pesa</h2>
+                <p class="text-lg text-gray-400 max-w-3xl mx-auto">
+                    Deposit money to your account instantly using M-Pesa
+                </p>
+            </div>
+            
+            <div class="max-w-md mx-auto bg-gray-900 p-8 rounded-xl">
+                <div class="mb-6">
+                    <label for="phoneNumber" class="block text-gray-400 mb-2">M-Pesa Phone Number</label>
+                    <input type="tel" id="phoneNumber" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="07XXXXXXXX" required>
+                </div>
+                
+                <div class="mb-6">
+                    <label for="amount" class="block text-gray-400 mb-2">Amount (KES)</label>
+                    <input type="number" id="amount" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="100" min="10" max="70000" required>
+                </div>
+                
+                <button id="mpesaPay" class="w-full py-3 bg-green-600 hover:bg-green-700 rounded-lg font-medium flex items-center justify-center">
+                    <i class="fas fa-mobile-alt mr-2"></i> Pay via M-Pesa
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Leaderboard Section -->
+    <section id="leaderboard" class="py-16 px-4 bg-gray-900">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Top Players</h2>
+                <p class="text-lg text-gray-400 max-w-3xl mx-auto">
+                    Our current leaderboard champions
+                </p>
+            </div>
+            
+            <div class="bg-gray-800 rounded-xl overflow-hidden">
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-gray-700 text-left">
+                            <th class="py-4 px-6">Rank</th>
+                            <th class="py-4 px-6">Player</th>
+                            <th class="py-4 px-6">Score</th>
+                            <th class="py-4 px-6">Games Won</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardBody">
+                        <!-- Leaderboard data will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 py-12 px-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <a href="#" class="flex items-center mb-6">
+                        <i class="fas fa-gamepad text-purple-500 text-2xl mr-2"></i>
+                        <span class="font-bold text-xl bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">FetroGames</span>
+                    </a>
+                    <p class="text-gray-400">
+                        The ultimate multiplayer gaming platform. Play, compete, and win rewards with friends.
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Games</h4>
+                    <ul class="space-y-2">
+                        <li><a href="/games/tic-tac-toe" class="text-gray-400 hover:text-purple-400">Tic Tac Toe</a></li>
+                        <li><a href="/games/rock-paper-scissors" class="text-gray-400 hover:text-pink-400">Rock Paper Scissors</a></li>
+                        <li><a href="/games/trivia" class="text-gray-400 hover:text-indigo-400">Trivia Challenge</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Company</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-purple-400">About Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-pink-400">Careers</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-indigo-400">Blog</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-blue-400">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Connect With Us</h4>
+                    <div class="flex space-x-4 mb-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-purple-500 transition">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-pink-500 transition">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-blue-500 transition">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-red-500 transition">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                    <p class="text-gray-400">
+                        Subscribe to our newsletter for updates
+                    </p>
+                    <div class="mt-2 flex">
+                        <input type="email" placeholder="Your email" class="px-4 py-2 bg-gray-800 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-purple-500 w-full">
+                        <button class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-r-lg">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-500 mb-4 md:mb-0">
+                    © 2023 FetroGames. All rights reserved.
+                </p>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-500 hover:text-gray-400">Privacy Policy</a>
+                    <a href="#" class="text-gray-500 hover:text-gray-400">Terms of Service</a>
+                    <a href="#" class="text-gray-500 hover:text-gray-400">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-gray-800 rounded-xl max-w-md w-full mx-4 auth-form border border-gray-700">
+            <div class="p-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold">Login to FetroGames</h3>
+                    <button id="closeLoginModal" class="text-gray-400 hover:text-white">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <form id="loginForm">
+                    <div class="mb-4">
+                        <label for="loginEmail" class="block text-gray-400 mb-2">Email</label>
+                        <input type="email" id="loginEmail" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="your@email.com" required>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label for="loginPassword" class="block text-gray-400 mb-2">Password</label>
+                        <input type="password" id="loginPassword" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="••••••••" required>
+                    </div>
+                    
+                    <button type="submit" class="w-full py-2 bg-purple-600 hover:bg-purple-700 rounded-lg font-medium mb-4">
+                        Login
+                    </button>
+                    
+                    <div class="text-center text-gray-400">
+                        Don't have an account? <button id="switchToRegister" class="text-purple-400 hover:text-purple-300">Register</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-gray-800 rounded-xl max-w-md w-full mx-4 auth-form border border-gray-700">
+            <div class="p-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold">Create an Account</h3>
+                    <button id="closeRegisterModal" class="text-gray-400 hover:text-white">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <form id="registerForm">
+                    <div class="mb-4">
+                        <label for="registerUsername" class="block text-gray-400 mb-2">Username</label>
+                        <input type="text" id="registerUsername" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="gamemaster" required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="registerEmail" class="block text-gray-400 mb-2">Email</label>
+                        <input type="email" id="registerEmail" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="your@email.com" required>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label for="registerPassword" class="block text-gray-400 mb-2">Password</label>
+                        <input type="password" id="registerPassword" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="••••••••" required>
+                    </div>
+                    
+                    <button type="submit" class="w-full py-2 bg-pink-600 hover:bg-pink-700 rounded-lg font-medium mb-4">
+                        Create Account
+                    </button>
+                    
+                    <div class="text-center text-gray-400">
+                        Already have an account? <button id="switchToLogin" class="text-pink-400 hover:text-pink-300">Login</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tic Tac Toe Game Modal -->
+    <div id="ticTacToeModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-gray-800 rounded-xl max-w-md w-full mx-4 border border-gray-700">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold">Tic Tac Toe</h3>
+                    <button id="closeTicTacToeModal" class="text-gray-400 hover:text-white">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="text-center mb-6">
+                    <div id="ticTacToeStatus" class="text-lg font-medium text-purple-400">Player X's turn</div>
+                </div>
+                
+                <div class="grid grid-cols-3 gap-2 mb-6">
+                    <div class="tic-tac-toe-cell w-full h-24 bg-gray-700 rounded-lg flex items-center justify-center text-4xl font-bold cursor-pointer hover:bg-gray-600" data-cell="0"></div>
+                    <div class="tic-tac-toe-cell w-full h-24 bg-gray-700 rounded-lg flex items-center justify-center text-4xl font-bold cursor-pointer hover:bg-gray-600" data-cell="1"></div>
+                    <div class="tic-tac-toe-cell w-full h-24 bg-gray-700 rounded-lg flex items-center justify-center text-4xl font-bold cursor-pointer hover:bg-gray-600" data-cell="2"></div>
+                    <div class="tic-tac-toe-cell w-full h-24 bg-gray-700 rounded-lg flex items-center justify-center text-4xl font-bold cursor-pointer hover:bg-gray-600" data-cell="3"></div>
+                    <div class="tic-tac-toe-cell w-full h-24 bg-gray-700 rounded-lg flex items-center justify-center text-4xl font-bold cursor-pointer hover:bg-gray-600" data-cell="4"></div>
+                    <div class="tic-tac-toe-cell w-full h-24 bg-gray-700 rounded-lg flex items-center justify-center text-4xl font-bold cursor-pointer hover:bg-gray-600" data-cell="5"></div>
+                    <div class="tic-tac-toe-cell w-full h-24 bg-gray-700 rounded-lg flex items-center justify-center text-4xl font-bold cursor-pointer hover:bg-gray-600" data-cell="6"></div>
+                    <div class="tic-tac-toe-cell w-full h-24 bg-gray-700 rounded-lg flex items-center justify-center text-4xl font-bold cursor-pointer hover:bg-gray-600" data-cell="7"></div>
+                    <div class="tic-tac-toe-cell w-full h-24 bg-gray-700 rounded-lg flex items-center justify-center text-4xl font-bold cursor-pointer hover:bg-gray-600" data-cell="8"></div>
+                </div>
+                
+                <div class="flex justify-between">
+                    <button id="ticTacToeReset" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg">
+                        Reset Game
+                    </button>
+                    <button id="ticTacToeClose" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg">
+                        Exit Game
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rock Paper Scissors Game Modal -->
+    <div id="rockPaperScissorsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-gray-800 rounded-xl max-w-md w-full mx-4 border border-gray-700">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold">Rock Paper Scissors</h3>
+                    <button id="closeRockPaperScissorsModal" class="text-gray-400 hover:text-white">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="text-center mb-8">
+                    <div id="rpsStatus" class="text-lg font-medium text-pink-400 mb-4">Choose your move!</div>
+                    
+                    <div class="flex justify-center space-x-4 mb-8">
+                        <div class="text-center">
+                            <div class="text-lg font-medium mb-2">You</div>
+                            <div id="playerChoice" class="text-6xl">?</div>
+                        </div>
+                        <div class="text-center flex items-center">
+                            <div class="text-2xl mx-4">vs</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-lg font-medium mb-2">Opponent</div>
+                            <div id="computerChoice" class="text-6xl">?</div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-center space-x-4 mb-6">
+                        <button class="rps-choice px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg text-4xl" data-choice="✊">
+                            ✊
+                        </button>
+                        <button class="rps-choice px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg text-4xl" data-choice="✋">
+                            ✋
+                        </button>
+                        <button class="rps-choice px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg text-4xl" data-choice="✌️">
+                            ✌️
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between">
+                    <button id="rpsReset" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg">
+                        Play Again
+                    </button>
+                    <button id="rpsClose" class="px-4 py-2 bg-pink-600 hover:bg-pink-700 rounded-lg">
+                        Exit Game
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trivia Game Modal -->
+    <div id="triviaModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-gray-800 rounded-xl max-w-md w-full mx-4 border border-gray-700">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold">Trivia Challenge</h3>
+                    <button id="closeTriviaModal" class="text-gray-400 hover:text-white">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div id="triviaGameArea">
+                    <div class="text-center mb-6">
+                        <div id="triviaStatus" class="text-lg font-medium text-indigo-400 mb-2">Question 1 of 5</div>
+                        <div id="triviaScore" class="text-lg">Score: 0</div>
+                    </div>
+                    
+                    <div id="triviaQuestion" class="text-xl font-medium mb-6">
+                        Loading question...
+                    </div>
+                    
+                    <div id="triviaOptions" class="space-y-3 mb-6">
+                        <button class="trivia-option w-full px-4 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg text-left transition">
+                            <span class="font-medium mr-2">A.</span> <span class="option-text">Option A</span>
+                        </button>
+                        <button class="trivia-option w-full px-4 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg text-left transition">
+                            <span class="font-medium mr-2">B.</span> <span class="option-text">Option B</span>
+                        </button>
+                        <button class="trivia-option w-full px-4 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg text-left transition">
+                            <span class="font-medium mr-2">C.</span> <span class="option-text">Option C</span>
+                        </button>
+                        <button class="trivia-option w-full px-4 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg text-left transition">
+                            <span class="font-medium mr-2">D.</span> <span class="option-text">Option D</span>
+                        </button>
+                    </div>
+                    
+                    <div id="triviaFeedback" class="hidden mb-4 p-3 rounded-lg"></div>
+                    
+                    <button id="triviaNext" class="w-full py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg font-medium hidden">
+                        Next Question
+                    </button>
+                </div>
+                
+                <div id="triviaResults" class="hidden text-center">
+                    <div class="text-2xl font-bold mb-4">Quiz Completed!</div>
+                    <div id="finalScore" class="text-4xl font-bold text-indigo-500 mb-6">5/5</div>
+                    <div class="mb-6">
+                        <div class="text-lg mb-2">Your performance:</div>
+                        <div class="w-full bg-gray-700 rounded-full h-4">
+                            <div id="scoreBar" class="bg-indigo-500 h-4 rounded-full" style="width: 100%"></div>
+                        </div>
+                    </div>
+                    <button id="triviaRestart" class="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg font-medium mr-2">
+                        Play Again
+                    </button>
+                    <button id="triviaExit" class="px-6 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg font-medium">
+                        Exit
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Notification -->
+    <div id="successNotification" class="fixed bottom-4 right-4 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg hidden z-50">
+        <div class="flex items-center">
+            <i class="fas fa-check-circle mr-2"></i>
+            <span id="successMessage">Operation successful!</span>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Firebase configuration would be initialized here
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
+        
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+    </script>
+        // DOM Elements
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const loginBtn = document.getElementById('loginBtn');
+        const registerBtn = document.getElementById('registerBtn');
+        const mobileLoginBtn = document.getElementById('mobileLoginBtn');
+        const mobileRegisterBtn = document.getElementById('mobileRegisterBtn');
+        const heroRegisterBtn = document.getElementById('heroRegisterBtn');
+        const heroGamesBtn = document.getElementById('heroGamesBtn');
+        const bottomRegisterBtn = document.getElementById('bottomRegisterBtn');
+        const bottomGamesBtn = document.getElementById('bottomGamesBtn');
+        
+        const loginModal = document.getElementById('loginModal');
+        const registerModal = document.getElementById('registerModal');
+        const closeLoginModal = document.getElementById('closeLoginModal');
+        const closeRegisterModal = document.getElementById('closeRegisterModal');
+        const switchToRegister = document.getElementById('switchToRegister');
+        const switchToLogin = document.getElementById('switchToLogin');
+        
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        
+        const ticTacToeModal = document.getElementById('ticTacToeModal');
+        const rockPaperScissorsModal = document.getElementById('rockPaperScissorsModal');
+        const triviaModal = document.getElementById('triviaModal');
+        
+        const successNotification = document.getElementById('successNotification');
+        const successMessage = document.getElementById('successMessage');
+
+        // Mobile menu toggle
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Show login modal
+        const showLoginModal = () => {
+            loginModal.classList.remove('hidden');
+            registerModal.classList.add('hidden');
+        };
+
+        // Show register modal
+        const showRegisterModal = () => {
+            registerModal.classList.remove('hidden');
+            loginModal.classList.add('hidden');
+        };
+
+        // Close modals
+        const closeAllModals = () => {
+            loginModal.classList.add('hidden');
+            registerModal.classList.add('hidden');
+            ticTacToeModal.classList.add('hidden');
+            rockPaperScissorsModal.classList.add('hidden');
+            triviaModal.classList.add('hidden');
+        };
+
+        // Event listeners for login/register buttons
+        loginBtn.addEventListener('click', showLoginModal);
+        registerBtn.addEventListener('click', showRegisterModal);
+        mobileLoginBtn.addEventListener('click', showLoginModal);
+        mobileRegisterBtn.addEventListener('click', showRegisterModal);
+        heroRegisterBtn.addEventListener('click', showRegisterModal);
+        bottomRegisterBtn.addEventListener('click', showRegisterModal);
+        
+        // Event listeners for close buttons
+        closeLoginModal.addEventListener('click', closeAllModals);
+        closeRegisterModal.addEventListener('click', closeAllModals);
+        
+        // Switch between login and register
+        switchToRegister.addEventListener('click', showRegisterModal);
+        switchToLogin.addEventListener('click', showLoginModal);
+        
+        // Form submissions
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            // In a real app, you would handle authentication here
+            showSuccessNotification('Logged in successfully!');
+            closeAllModals();
+        });
+        
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            // In a real app, you would handle registration here
+            showSuccessNotification('Account created successfully!');
+            closeAllModals();
+        });
+        
+        // Show success notification
+        const showSuccessNotification = (message) => {
+            successMessage.textContent = message;
+            successNotification.classList.remove('hidden');
+            setTimeout(() => {
+                successNotification.classList.add('hidden');
+            }, 3000);
+        };
+        
+        // Scroll to games section
+        heroGamesBtn.addEventListener('click', () => {
+            document.getElementById('games').scrollIntoView({ behavior: 'smooth' });
+        });
+        
+        bottomGamesBtn.addEventListener('click', () => {
+            document.getElementById('games').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // Tic Tac Toe Game Logic
+        const ticTacToeCells = document.querySelectorAll('.tic-tac-toe-cell');
+        const ticTacToeStatus = document.getElementById('ticTacToeStatus');
+        const ticTacToeReset = document.getElementById('ticTacToeReset');
+        const ticTacToeClose = document.getElementById('ticTacToeClose');
+        const closeTicTacToeModal = document.getElementById('closeTicTacToeModal');
+        
+        let currentPlayer = 'X';
+        let gameState = ['', '', '', '', '', '', '', '', ''];
+        let gameActive = true;
+        
+        const winningConditions = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
+            [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
+            [0, 4, 8], [2, 4, 6]             // diagonals
+        ];
+        
+        const handleCellClick = (e) => {
+            const clickedCell = e.target;
+            const clickedCellIndex = parseInt(clickedCell.getAttribute('data-cell'));
+            
+            if (gameState[clickedCellIndex] !== '' || !gameActive) {
+                return;
+            }
+            
+            gameState[clickedCellIndex] = currentPlayer;
+            clickedCell.textContent = currentPlayer;
+            
+            if (currentPlayer === 'X') {
+                clickedCell.classList.add('text-purple-500');
+            } else {
+                clickedCell.classList.add('text-pink-500');
+            }
+            
+            checkResult();
+        };
+        
+        const checkResult = () => {
+            let roundWon = false;
+            
+            for (let i = 0; i < winningConditions.length; i++) {
+                const [a, b, c] = winningConditions[i];
+                
+                if (gameState[a] === '' || gameState[b] === '' || gameState[c] === '') {
+                    continue;
+                }
+                
+                if (gameState[a] === gameState[b] && gameState[b] === gameState[c]) {
+                    roundWon = true;
+                    break;
+                }
+            }
+            
+            if (roundWon) {
+                ticTacToeStatus.textContent = `Player ${currentPlayer} wins!`;
+                ticTacToeStatus.classList.add('text-yellow-400');
+                gameActive = false;
+                return;
+            }
+            
+            if (!gameState.includes('')) {
+                ticTacToeStatus.textContent = 'Game ended in a draw!';
+                ticTacToeStatus.classList.add('text-gray-400');
+                gameActive = false;
+                return;
+            }
+            
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            ticTacToeStatus.textContent = `Player ${currentPlayer}'s turn`;
+        };
+        
+        const resetGame = () => {
+            currentPlayer = 'X';
+            gameState = ['', '', '', '', '', '', '', '', ''];
+            gameActive = true;
+            ticTacToeStatus.textContent = `Player ${currentPlayer}'s turn`;
+            ticTacToeStatus.classList.remove('text-yellow-400', 'text-gray-400');
+            ticTacToeStatus.classList.add('text-purple-400');
+            
+            ticTacToeCells.forEach(cell => {
+                cell.textContent = '';
+                cell.classList.remove('text-purple-500', 'text-pink-500');
+            });
+        };
+        
+        ticTacToeCells.forEach(cell => {
+            cell.addEventListener('click', handleCellClick);
+        });
+        
+        ticTacToeReset.addEventListener('click', resetGame);
+        ticTacToeClose.addEventListener('click', closeAllModals);
+        closeTicTacToeModal.addEventListener('click', closeAllModals);
+        
+        // Rock Paper Scissors Game Logic
+        const rpsChoices = document.querySelectorAll('.rps-choice');
+        const playerChoiceDisplay = document.getElementById('playerChoice');
+        const computerChoiceDisplay = document.getElementById('computerChoice');
+        const rpsStatus = document.getElementById('rpsStatus');
+        const rpsReset = document.getElementById('rpsReset');
+        const rpsClose = document.getElementById('rpsClose');
+        const closeRockPaperScissorsModal = document.getElementById('closeRockPaperScissorsModal');
+        
+        const choices = ['✊', '✋', '✌️'];
+        
+        rpsChoices.forEach(choice => {
+            choice.addEventListener('click', () => {
+                const playerChoice = choice.getAttribute('data-choice');
+                const computerChoice = choices[Math.floor(Math.random() * choices.length)];
+                
+                playerChoiceDisplay.textContent = playerChoice;
+                computerChoiceDisplay.textContent = computerChoice;
+                
+                let result = determineWinner(playerChoice, computerChoice);
+                
+                rpsStatus.textContent = result.message;
+                
+                if (result.winner === 'player') {
+                    rpsStatus.classList.remove('text-pink-400', 'text-gray-400');
+                    rpsStatus.classList.add('text-green-400');
+                    playerChoiceDisplay.classList.add('text-green-500');
+                    computerChoiceDisplay.classList.add('text-red-500');
+                } else if (result.winner === 'computer') {
+                    rpsStatus.classList.remove('text-pink-400', 'text-gray-400');
+                    rpsStatus.classList.add('text-red-400');
+                    playerChoiceDisplay.classList.add('text-red-500');
+                    computerChoiceDisplay.classList.add('text-green-500');
+                } else {
+                    rpsStatus.classList.remove('text-pink-400', 'text-green-400', 'text-red-400');
+                    rpsStatus.classList.add('text-gray-400');
+                    playerChoiceDisplay.classList.add('text-yellow-500');
+                    computerChoiceDisplay.classList.add('text-yellow-500');
+                }
+            });
+        });
+        
+        const determineWinner = (player, computer) => {
+            if (player === computer) {
+                return { winner: 'draw', message: "It's a draw!" };
+            }
+            
+            if (
+                (player === '✊' && computer === '✌️') ||
+                (player === '✋' && computer === '✊') ||
+                (player === '✌️' && computer === '✋')
+            ) {
+                return { winner: 'player', message: "You win!" };
+            }
+            
+            return { winner: 'computer', message: "Computer wins!" };
+        };
+        
+        rpsReset.addEventListener('click', () => {
+            playerChoiceDisplay.textContent = '?';
+            computerChoiceDisplay.textContent = '?';
+            rpsStatus.textContent = 'Choose your move!';
+            rpsStatus.classList.remove('text-green-400', 'text-red-400', 'text-gray-400');
+            rpsStatus.classList.add('text-pink-400');
+            playerChoiceDisplay.classList.remove('text-green-500', 'text-red-500', 'text-yellow-500');
+            computerChoiceDisplay.classList.remove('text-green-500', 'text-red-500', 'text-yellow-500');
+        });
+        
+        rpsClose.addEventListener('click', closeAllModals);
+        closeRockPaperScissorsModal.addEventListener('click', closeAllModals);
+        
+        // Trivia Game Logic
+        const triviaQuestion = document.getElementById('triviaQuestion');
+        const triviaOptions = document.querySelectorAll('.trivia-option');
+        const triviaStatus = document.getElementById('triviaStatus');
+        const triviaScore = document.getElementById('triviaScore');
+        const triviaFeedback = document.getElementById('triviaFeedback');
+        const triviaNext = document.getElementById('triviaNext');
+        const triviaGameArea = document.getElementById('triviaGameArea');
+        const triviaResults = document.getElementById('triviaResults');
+        const finalScore = document.getElementById('finalScore');
+        const scoreBar = document.getElementById('scoreBar');
+        const triviaRestart = document.getElementById('triviaRestart');
+        const triviaExit = document.getElementById('triviaExit');
+        const closeTriviaModal = document.getElementById('closeTriviaModal');
+        
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let questions = [];
+        
+        // Sample trivia questions
+        const sampleQuestions = [
+            {
+                question: "What is the capital of France?",
+                options: ["London", "Berlin", "Paris", "Madrid"],
+                answer: 2
+            },
+            {
+                question: "Which planet is known as the Red Planet?",
+                options: ["Venus", "Mars", "Jupiter", "Saturn"],
+                answer: 1
+            },
+            {
+                question: "Who painted the Mona Lisa?",
+                options: ["Vincent van Gogh", "Pablo Picasso", "Leonardo da Vinci", "Michelangelo"],
+                answer: 2
+            },
+            {
+                question: "What is the largest mammal in the world?",
+                options: ["Elephant", "Blue Whale", "Giraffe", "Polar Bear"],
+                answer: 1
+            },
+            {
+                question: "Which language is primarily used for web development?",
+                options: ["Java", "C++", "Python", "JavaScript"],
+                answer: 3
+            }
+        ];
+        
+        const startTriviaGame = () => {
+            questions = [...sampleQuestions];
+            currentQuestionIndex = 0;
+            score = 0;
+            triviaGameArea.classList.remove('hidden');
+            triviaResults.classList.add('hidden');
+            loadQuestion();
+        };
+        
+        const loadQuestion = () => {
+            const currentQuestion = questions[currentQuestionIndex];
+            triviaQuestion.textContent = currentQuestion.question;
+            triviaStatus.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+            triviaScore.textContent = `Score: ${score}`;
+            
+            triviaOptions.forEach((option, index) => {
+                option.querySelector('.option-text').textContent = currentQuestion.options[index];
+                option.dataset.optionIndex = index;
+                option.classList.remove('bg-green-500', 'bg-red-500', 'hover:bg-gray-600');
+                option.classList.add('bg-gray-700', 'hover:bg-gray-600');
+                option.disabled = false;
+            });
+            
+            triviaFeedback.classList.add('hidden');
+            triviaNext.classList.add('hidden');
+        };
+        
+        const handleOptionClick = (e) => {
+            const selectedOption = e.currentTarget;
+            const selectedIndex = parseInt(selectedOption.dataset.optionIndex);
+            const currentQuestion = questions[currentQuestionIndex];
+            
+            // Disable all options after selection
+            triviaOptions.forEach(option => {
+                option.disabled = true;
+                option.classList.remove('hover:bg-gray-600');
+            });
+            
+            // Check if answer is correct
+            if (selectedIndex === currentQuestion.answer) {
+                selectedOption.classList.remove('bg-gray-700');
+                selectedOption.classList.add('bg-green-500');
+                triviaFeedback.textContent = "Correct!";
+                triviaFeedback.classList.remove('hidden', 'bg-red-600');
+                triviaFeedback.classList.add('bg-green-600');
+                score++;
+                triviaScore.textContent = `Score: ${score}`;
+            } else {
+                selectedOption.classList.remove('bg-gray-700');
+                selectedOption.classList.add('bg-red-500');
+                triviaFeedback.textContent = `Incorrect! The correct answer was: ${currentQuestion.options[currentQuestion.answer]}`;
+                triviaFeedback.classList.remove('hidden', 'bg-green-600');
+                triviaFeedback.classList.add('bg-red-600');
+                
+                // Highlight correct answer
+                triviaOptions[currentQuestion.answer].classList.remove('bg-gray-700');
+                triviaOptions[currentQuestion.answer].classList.add('bg-green-500');
+            }
+            
+            // Show next button
+            triviaNext.classList.remove('hidden');
+        };
+        
+        const showNextQuestion = () => {
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        };
+        
+        const showResults = () => {
+            triviaGameArea.classList.add('hidden');
+            triviaResults.classList.remove('hidden');
+            
+            finalScore.textContent = `${score}/${questions.length}`;
+            const percentage = (score / questions.length) * 100;
+            scoreBar.style.width = `${percentage}%`;
+            
+            if (percentage >= 80) {
+                finalScore.classList.add('text-green-500');
+            } else if (percentage >= 50) {
+                finalScore.classList.add('text-yellow-500');
+            } else {
+                finalScore.classList.add('text-red-500');
+            }
+        };
+        
+        triviaOptions.forEach(option => {
+            option.addEventListener('click', handleOptionClick);
+        });
+        
+        triviaNext.addEventListener('click', showNextQuestion);
+        triviaRestart.addEventListener('click', startTriviaGame);
+        triviaExit.addEventListener('click', closeAllModals);
+        closeTriviaModal.addEventListener('click', closeAllModals);
+        
+        // Game launch buttons
+        document.querySelector('.play-tic-tac-toe').addEventListener('click', () => {
+            resetGame();
+            ticTacToeModal.classList.remove('hidden');
+        });
+        
+        document.querySelector('.play-rock-paper-scissors').addEventListener('click', () => {
+            rpsReset.click();
+            rockPaperScissorsModal.classList.remove('hidden');
+        });
+        
+        document.querySelector('.play-trivia').addEventListener('click', () => {
+            startTriviaGame();
+            triviaModal.classList.remove('hidden');
+        });
+        
+        // M-Pesa STK Push Functionality
+        const mpesaPay = document.getElementById('mpesaPay');
+        const phoneNumber = document.getElementById('phoneNumber');
+        const amount = document.getElementById('amount');
+        
+        mpesaPay.addEventListener('click', async () => {
+            if (!phoneNumber.value || !amount.value) {
+                showSuccessNotification('Please fill all fields');
+                return;
+            }
+            
+            if (phoneNumber.value.length !== 10 || !phoneNumber.value.startsWith('07')) {
+                showSuccessNotification('Please enter a valid M-Pesa number (07XXXXXXXX)');
+                return;
+            }
+            
+            if (amount.value < 10 || amount.value > 70000) {
+                showSuccessNotification('Amount must be between KES 10 and KES 70,000');
+                return;
+            }
+            
+            try {
+                // In a real app, you would call your backend API to initiate STK push
+                showSuccessNotification('STK Push sent to your phone. Please enter your M-Pesa PIN');
+                
+                // Simulate successful payment after 5 seconds
+                setTimeout(() => {
+                    showSuccessNotification('Payment successful! Funds added to your account');
+                    phoneNumber.value = '';
+                    amount.value = '';
+                }, 5000);
+            } catch (error) {
+                showSuccessNotification('Payment failed. Please try again');
+                console.error('M-Pesa error:', error);
+            }
+        });
+
+        // Leaderboard Data
+        const leaderboardBody = document.getElementById('leaderboardBody');
+        const leaderboardData = [
+            { rank: 1, name: "GameMaster", score: 1250, gamesWon: 42, avatar: "GM" },
+            { rank: 2, name: "TriviaKing", score: 980, gamesWon: 35, avatar: "TK" },
+            { rank: 3, name: "RPSChamp", score: 875, gamesWon: 28, avatar: "RC" },
+            { rank: 4, name: "TicTacPro", score: 760, gamesWon: 25, avatar: "TP" },
+            { rank: 5, name: "NewPlayer", score: 450, gamesWon: 15, avatar: "NP" }
+        ];
+
+        // Populate leaderboard
+        function updateLeaderboard() {
+            leaderboardBody.innerHTML = '';
+            leaderboardData.forEach(player => {
+                const row = document.createElement('tr');
+                row.className = 'border-b border-gray-700 hover:bg-gray-700';
+                
+                row.innerHTML = `
+                    <td class="py-4 px-6 font-bold ${player.rank <= 3 ? 'text-yellow-400' : 'text-gray-400'}">${player.rank}</td>
+                    <td class="py-4 px-6 flex items-center">
+                        <div class="w-10 h-10 rounded-full ${getAvatarColor(player.rank)} flex items-center justify-center text-white font-bold mr-4">${player.avatar}</div>
+                        ${player.name}
+                    </td>
+                    <td class="py-4 px-6">${player.score}</td>
+                    <td class="py-4 px-6">${player.gamesWon}</td>
+                `;
+                
+                leaderboardBody.appendChild(row);
+            });
+        }
+
+        function getAvatarColor(rank) {
+            switch(rank) {
+                case 1: return 'bg-yellow-500';
+                case 2: return 'bg-gray-400';
+                case 3: return 'bg-amber-700';
+                default: return 'bg-purple-500';
+            }
+        }
+
+        // Initialize leaderboard
+        updateLeaderboard();
+
+        // Initialize games when modals are opened
+        ticTacToeModal.addEventListener('click', (e) => {
+            if (e.target === ticTacToeModal) {
+                closeAllModals();
+            }
+        });
+        
+        rockPaperScissorsModal.addEventListener('click', (e) => {
+            if (e.target === rockPaperScissorsModal) {
+                closeAllModals();
+            }
+        });
+        
+        triviaModal.addEventListener('click', (e) => {
+            if (e.target === triviaModal) {
+                closeAllModals();
+            }
+        });
+        
+        loginModal.addEventListener('click', (e) => {
+            if (e.target === loginModal) {
+                closeAllModals();
+            }
+        });
+        
+        registerModal.addEventListener('click', (e) => {
+            if (e.target === registerModal) {
+                closeAllModals();
+            }
+        });
+    </script>
+</body>
+</html>
